@@ -4,9 +4,11 @@ main.cpp
 Evolutionary Algorithm with Local Search
 23/08/2018
 /--------------*/
+
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <chrono>
 #include <cstring>
 #include <iomanip>
 #include <cmath>
@@ -15,26 +17,44 @@ using namespace std;
 #include "base.h"
 #include "methods.h"
 
+struct Timer{
+
+    std::chrono::high_resolution_clock::time_point startTime, endTime;
+    std::chrono::duration<float> totalTime;
+
+    Timer(){
+        startTime = std::chrono::high_resolution_clock::now();
+    }
+
+    ~Timer(){
+        endTime = std::chrono::high_resolution_clock::now();
+        totalTime = endTime - startTime;
+
+        float totalTimems = totalTime.count() * 1000.0f;
+        cout << "\nCPU Time: " << totalTimems << "ms (" << totalTime.count() << "s)" << endl;
+    }
+};
+
 void ProgramInfo(){
 
     cout << "Evolutionary Algorithm for the SCSPP:\n-------------\n"
          << "PARAMETERS:\n"
-         << "       -i <int>    [Number of instances. Default = 1000.]\n"
+         << "       -i <int>    [Number of iterations. Default = 1000.]\n"
          << "       -t <int>    [Constraint value. Default = 70.]\n"
          << "       -n <int>    [Number of items. Default = 500.]\n"
          << "       -a <int>    [Minimum score width. Default = 1.]\n"
          << "       -b <int>    [Maximum score width. Default = 70.]\n"
-         << "       -w <int>    [Minimum item width. Default = 150.]\n"
-         << "       -W <int>    [Maximum item width. Default = 1000.]\n"
-         << "       -l <int>    [Length of strips. Default = 5000.]\n"
+         << "       -m <int>    [Minimum item width. Default = 150.]\n"
+         << "       -M <int>    [Maximum item width. Default = 1000.]\n"
+         << "       -W <int>    [Width of strips. Default = 5000.]\n"
          << "       -p <int>    [Number of solutions in population.]\n"
-         << "       -r <int>    [Recombination operator. 1: GGA. 2: GPX'.]\n"
+         << "       -r <int>    [Crossover operator. 1: GGA. 2: GPX'.]\n"
          << "       -s <int>    [Random seed. Default = 1.]\n"
          << "---------------\n\n";
 }
 
-void ArgumentCheck(int numInstances, int tau, int numItem, int minWidth, int maxWidth, int minItemWidth, int maxItemWidth,
-                   int stripLength, int numPop, int xOver, int randomSeed){
+void ArgumentCheck(int numIterations, int tau, int numItem, int minWidth, int maxWidth, int minItemWidth, int maxItemWidth,
+                   int stripWidth, int numPop, int xOver, int randomSeed){
 
     bool error = false;
 
@@ -43,7 +63,7 @@ void ArgumentCheck(int numInstances, int tau, int numItem, int minWidth, int max
         cout << "[ERROR]: Constraint value cannot be zero.\n";
         error = true;
     }
-    if(stripLength == 0){
+    if(stripWidth == 0){
         cout << "[ERROR]: Strip cannot have length zero.\n";
         error = true;
     }
@@ -64,7 +84,7 @@ void ArgumentCheck(int numInstances, int tau, int numItem, int minWidth, int max
         cout << "[ERROR]: Minimum score width is greater than maximum score width.\n";
         error = true;
     }
-    if(maxItemWidth > stripLength){
+    if(maxItemWidth > stripWidth){
         cout << "[ERROR]: Maximum item width is larger than length of strip.\n";
         error = true;
     }
@@ -82,17 +102,17 @@ void ArgumentCheck(int numInstances, int tau, int numItem, int minWidth, int max
         exit(1);
     }
 
-    cout << std::left << setw(20) << "Number of instances:" << std::right << setw(10) << numInstances << endl
+    cout << std::left << setw(20) << "Number of iterations:" << std::right << setw(9) << numIterations << endl
          << std::left << setw(20) << "Constraint value:" << std::right << setw(10) << tau << endl
          << std::left << setw(20) << "Number of items:" << std::right << setw(10) << numItem << endl
          << std::left << setw(20) << "Minimum score width:" << std::right << setw(10) << minWidth << endl
          << std::left << setw(20) << "Maximum score width:" << std::right << setw(10) << maxWidth << endl
          << std::left << setw(20) << "Minimum item width:" << std::right << setw(10) << minItemWidth << endl
          << std::left << setw(20) << "Maxmimum item width:" << std::right << setw(10) << maxItemWidth << endl
-         << std::left << setw(20) << "Length of strips:" << std::right << setw(10) << stripLength << endl
+         << std::left << setw(20) << "Width of strips:" << std::right << setw(10) << stripWidth << endl
          << std::left << setw(20) << "Population size:" << std::right << setw(10) << numPop << endl;
     if(xOver == 1){
-        cout << std::left << setw(20) << "Recombination operator: " << std::right << setw(6) << "GGA" << endl;
+        cout << std::left << setw(20) << "Crossover operator: " << std::right << setw(10) << "GGA" << endl;
     }
     else if(xOver == 2){
         cout << std::left << setw(20) << "Recombination operator: " << std::right << setw(6) << "GPX" << endl;
@@ -101,6 +121,7 @@ void ArgumentCheck(int numInstances, int tau, int numItem, int minWidth, int max
     cout << "------------------------------\n\n";
 }
 
+
 int main(int argc, char **argv){
     if(argc <= 1){
         ProgramInfo();
@@ -108,14 +129,14 @@ int main(int argc, char **argv){
     }
 
     int x;
-    int numInstances = 1000;
+    int numIterations = 1000;
     int tau = 70;
     int numItem = 500;
     int minWidth = 1;
     int maxWidth = 70;
     int minItemWidth = 150;
     int maxItemWidth = 1000;
-    int stripLength = 5000;
+    int stripWidth = 5000;
     int numPop = 0;
     int xOver = 1;
     int randomSeed = 1;
@@ -124,7 +145,7 @@ int main(int argc, char **argv){
     //region User Arguments
     for(x = 1; x < argc; ++x){
         if(strcmp("-i", argv[x]) == 0){
-            numInstances = atoi(argv[++x]);
+            numIterations = atoi(argv[++x]);
         }
         else if(strcmp("-t", argv[x]) == 0){
             tau = atoi(argv[++x]);
@@ -138,14 +159,14 @@ int main(int argc, char **argv){
         else if(strcmp("-b", argv[x]) == 0){
             maxWidth = atoi(argv[++x]);
         }
-        else if(strcmp("-w", argv[x]) == 0){
+        else if(strcmp("-m", argv[x]) == 0){
             minItemWidth = atoi(argv[++x]);
         }
-        else if(strcmp("-W", argv[x]) == 0){
+        else if(strcmp("-M", argv[x]) == 0){
             maxItemWidth = atoi(argv[++x]);
         }
-        else if(strcmp("-l", argv[x]) == 0){
-            stripLength = atoi(argv[++x]);
+        else if(strcmp("-W", argv[x]) == 0){
+            stripWidth = atoi(argv[++x]);
         }
         else if(strcmp("-p", argv[x]) == 0){
             numPop = atoi(argv[++x]);
@@ -159,10 +180,10 @@ int main(int argc, char **argv){
     }
     //endregion
 
-    ArgumentCheck(numInstances, tau, numItem, minWidth, maxWidth, minItemWidth, maxItemWidth, stripLength, numPop, xOver, randomSeed);
+    ArgumentCheck(numIterations, tau, numItem, minWidth, maxWidth, minItemWidth, maxItemWidth, stripWidth, numPop, xOver, randomSeed);
 
     int i, j, k, bestStart, bestEnd;
-    int instance;
+    int iteration;
     int numScores = numItem * 2;
     double totalItemWidth;
     vector<int> allScores;
@@ -177,55 +198,64 @@ int main(int argc, char **argv){
     double bestFitness = 0.0;
     double tempFitness;
 
-    srand(randomSeed);
+    vector<vector<int> > qualityStrips;
+    vector<int> qualityStripsSum;
 
-    time_t startTime, endTime;
-    startTime = clock();
+    srand(randomSeed);
+    Timer timer;
+
 
     CreateInstance(tau, numScores, numItem, minWidth, maxWidth, minItemWidth, maxItemWidth, totalItemWidth, allScores,
                    partners, adjMatrix, itemWidths, allItems);
 
 
-    int LB = LowerBound(stripLength, totalItemWidth);
+    int LB = LowerBound(stripWidth, totalItemWidth);
     cout << "Lower bound: " << LB << " strips." << endl << endl;
 
-    CreateInitPop(tau, numPop, numScores, numItem, maxItemWidth, stripLength, allScores, partners, adjMatrix,
-                  itemWidths, populationSum, population);
+    CreateInitPop(tau, numPop, numScores, numItem, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, populationSum, population);
 
 
     //Finding the solution in the population that has the best fitness value
     for(i = 0; i < population.size(); ++i){
-        tempFitness = Fitness(stripLength, populationSum[i], population[i]);
+        tempFitness = Fitness(stripWidth, populationSum[i], population[i]);
         if(tempFitness > bestFitness){
             bestFitness = tempFitness;
             bestStart = i;
         }
     }
-
     bestSolnStart = population[bestStart];
     bestSolnStartSum = populationSum[bestStart];
 
 
-    cout << "START - Best solution in the population:\n"
-         << "Solution: " << bestStart << "\nFitness: " << bestFitness << "\nSize: " << bestSolnStart.size() << " strips." << endl << endl;
+    cout << "START - Best solution in the population:\n";
+    cout << "Solution: " << bestStart << "\nFitness: " << bestFitness << "\nSize: " << bestSolnStart.size() << " strips." << endl << endl;
 
     bestEnd = bestStart;
 
 
-    for(instance = 0; instance < numInstances; ++instance) {
-        EA(tau, xOver, numScores, maxItemWidth, stripLength, bestEnd, bestFitness, allScores, partners, adjMatrix, itemWidths, populationSum, population);
+    for(iteration = 0; iteration < numIterations; ++iteration) {
+        EA(tau, xOver, numScores, maxItemWidth, stripWidth, bestEnd, bestFitness, allScores, partners, adjMatrix, itemWidths, populationSum, population,
+           qualityStripsSum, qualityStrips);
     }
 
+    cout << "qualityStrip\n";
+    for(i = 0; i < qualityStrips.size(); ++i){
+        for(j = 0; j < qualityStrips[i].size(); ++j){
+            cout << qualityStrips[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
 
-    cout << "END - Best solution in the population:\n"
-         << "Solution: " << bestEnd << "\nFitness: " << bestFitness << "\nSize: " << population[bestEnd].size() << " strips." << endl << endl;
+    cout << "qualityStripSum\n";
+    for(i = 0; i < qualityStripsSum.size(); ++i){
+        cout << qualityStripsSum[i] << " ";
+    }
+    cout << endl << endl;
 
 
-
-    endTime = clock();
-    double totalTimeMS = (((endTime - startTime) / double(CLOCKS_PER_SEC)) * 1000);
-    double totalTimeS = totalTimeMS / 1000;
-    cout << "\nCPU Time = " << totalTimeMS << " milliseconds (" << totalTimeS << " seconds.)\nEND.\n";
+    cout << "END - Best solution in the population:\n";
+    cout << "Solution: " << bestEnd << "\nFitness: " << bestFitness << "\nSize: " << population[bestEnd].size() << " strips." << endl << endl;
 
 
 }//END INT MAIN

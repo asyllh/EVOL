@@ -8,7 +8,6 @@ Evolutionary Algorithm with Local Search
 #ifndef EVOL_BASE_H
 #define EVOL_BASE_H
 
-
 #include <iostream>
 #include <vector>
 using namespace std;

@@ -4,10 +4,12 @@ base.cpp
 Evolutionary Algorithm with Local Search
 23/08/2018
 /--------------*/
+
 #include <algorithm>
-#include <iomanip>
+//#include <iomanip>
 #include "base.h"
 using namespace std;
+
 
 void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWidth, int minItemWidth, int maxItemWidth, double &totalItemWidth,
                     vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths,
@@ -135,3 +137,5 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
     cout << endl;*/
 
 }
+
+

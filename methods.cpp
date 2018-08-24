@@ -7,7 +7,7 @@ Evolutionary Algorithm with Local Search
 
 #include <algorithm>
 #include <cmath>
-#include <iomanip>
+//#include <iomanip>
 #include "methods.h"
 using namespace std;
 
@@ -17,21 +17,21 @@ void Swap(int &a, int &b){
     b = temp;
 }
 
-int LowerBound(int stripLength, double totalItemWidth){
+int LowerBound(int stripWidth, double totalItemWidth){
     int lBound;
 
-    lBound = ceil(totalItemWidth/stripLength);
+    lBound = ceil(totalItemWidth/stripWidth);
     return lBound;
 }
 
-double Fitness(int stripLength, vector<int> &stripSum, vector<vector<int> > &strip){
+double Fitness(int stripWidth, vector<int> &stripSum, vector<vector<int> > &strip){
 
     int i;
     double total = 0.0;
     double final;
 
     for(i = 0; i < strip.size(); ++i){
-        double a = static_cast<double>(stripSum[i]) / static_cast<double>(stripLength);
+        double a = static_cast<double>(stripSum[i]) / static_cast<double>(stripWidth);
         total += pow(a, 2);
     }
 
@@ -41,8 +41,7 @@ double Fitness(int stripLength, vector<int> &stripSum, vector<vector<int> > &str
 
 }
 
-void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, vector<vector<int> > &itemWidths,
-         vector<int> &itemOrder){
+void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, vector<vector<int> > &itemWidths, vector<int> &itemOrder){
 
     int i, mini;
     int min = 0;
@@ -95,7 +94,7 @@ void FFR(int numScores, int numItem, vector<int> &partners, vector<vector<int> >
 
 }
 
-void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vector<int> &partners,
+void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &partners,
              vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, bool decrease){
 
     int i, j, k, l;
@@ -122,7 +121,7 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vect
     for(j = 1; j < itemOrder.size(); ++j){
         for(i = 0; i < strip.size(); ++i){
             if(!strip[i].empty()){
-                if(stripSum[i] + itemWidths[itemOrder[j]][partners[itemOrder[j]]] <= stripLength){
+                if(stripSum[i] + itemWidths[itemOrder[j]][partners[itemOrder[j]]] <= stripWidth){
                     if(adjMatrix[strip[i].back()][itemOrder[j]] == 1){
                         strip[i].push_back(itemOrder[j]);
                         strip[i].push_back(partners[itemOrder[j]]);
@@ -162,7 +161,7 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vect
 
     //cout << "After FFD: " << strip.size() << " strips\n";
 
-    //cout << "Lower Bound: " << LowerBound(totalItemWidth, stripLength) << " strips\n";
+    //cout << "Lower Bound: " << LowerBound(totalItemWidth, stripWidth) << " strips\n";
 
 
     /*cout << "Strips FFD (scores):\n";
@@ -178,7 +177,7 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vect
     /*cout << "Strip" << setw(8) << "Width" << setw(12) << "Residual\n";
     for(i = 0; i < stripSum.size(); ++i){
         if(stripSum[i] !=0) {
-            cout << i << setw(9) << stripSum[i] << setw(9) << stripLength - stripSum[i] << endl;
+            cout << i << setw(9) << stripSum[i] << setw(9) << stripWidth - stripSum[i] << endl;
         }
     }
     cout << endl;*/
@@ -187,7 +186,7 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vect
 
 }
 
-void PartialFFD(int numScores, int maxItemWidth, int stripLength, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void PartialFFD(int numScores, int maxItemWidth, int stripWidth, vector<int> &partners, vector<vector<int> > &adjMatrix,
                 vector<vector<int> > &itemWidths, vector<int> &partialItem, vector<int> &partialSum, vector<vector<int> > &partialSol){
 
     int i, j, mini, k, l;
@@ -228,7 +227,7 @@ void PartialFFD(int numScores, int maxItemWidth, int stripLength, vector<int> &p
     for(j = 1; j < itemDecrease.size(); ++j){
         for(i = 0; i < partialSol.size(); ++i){
             if(!partialSol[i].empty()){
-                if(partialSum[i] + itemWidths[itemDecrease[j]][partners[itemDecrease[j]]] <= stripLength){
+                if(partialSum[i] + itemWidths[itemDecrease[j]][partners[itemDecrease[j]]] <= stripWidth){
                     if(adjMatrix[partialSol[i].back()][itemDecrease[j]] == 1){
                         partialSol[i].push_back(itemDecrease[j]);
                         partialSol[i].push_back(partners[itemDecrease[j]]);
@@ -288,7 +287,7 @@ void PartialFFD(int numScores, int maxItemWidth, int stripLength, vector<int> &p
 
 }
 
-void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners,
+void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
                    vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths,
                    vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population){
 
@@ -296,9 +295,9 @@ void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemW
     vector<vector<int> > strip(numItem);
     vector<int> stripSum(numItem, 0);
 
-    FFShell(numScores, numItem, maxItemWidth, stripLength, partners, adjMatrix, itemWidths, stripSum, strip, true);
+    FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, true);
 
-    //Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
+    //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
 
     population.push_back(strip);
     populationSum.push_back(stripSum);
@@ -311,9 +310,9 @@ void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemW
             stripSum.push_back(0);
         }
 
-        FFShell(numScores, numItem, maxItemWidth, stripLength, partners, adjMatrix, itemWidths, stripSum, strip, false);
+        FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, false);
 
-       // Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
+       // Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
 
         population.push_back(strip);
         populationSum.push_back(stripSum);
@@ -338,7 +337,7 @@ void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemW
 
 }
 
-void Mutation(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
               vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip){
 
     int i, j;
@@ -369,12 +368,12 @@ void Mutation(int tau, int numScores, int maxItemWidth, int stripLength, vector<
     }
 
 
-    LocalSearch(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, stripSum, strip,
+    LocalSearch(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip,
                 stripSumX, stripX, stripSumY, stripY);
 
 }
 
-void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
                  vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, vector<int> &stripSumX, vector<vector<int> > &stripX,
                  vector<int> &stripSumY, vector<vector<int> > &stripY){
 
@@ -400,7 +399,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vect
                                 for(d = c+2; d < stripY[j].size()-1; d+=2){ //Starting from the first score on the second box until the first score on the last box
                                     pairSizeY = itemWidths[stripY[j][c]][stripY[j][c+1]] + itemWidths[stripY[j][d]][stripY[j][d+1]]; //Sum box widths
                                     //Check if pairSizeX < pairSizeY and that boxes can fit onto strip
-                                    if(pairSizeX < pairSizeY && stripSumX[i] - pairSizeX + pairSizeY <= stripLength){
+                                    if(pairSizeX < pairSizeY && stripSumX[i] - pairSizeX + pairSizeY <= stripWidth){
                                         swapType = 1;
                                         //cout << "i: " << i << " j: " << j << " a: " << a << " b: " << b << " c: " << c << " d: " << d << endl;
                                         if(stripX[i].size() == 4){ //If stripX[i] only contains 2 boxes
@@ -475,7 +474,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vect
                         //Go through each box on stripY[j]
                         for(c = 0; c < stripY[j].size()-1; c+=2){ //Starting from the first score on the first box unil the first score on the last box
                             //Check if pairSizeX < width of box in stripY, and that box can fit onto strip
-                            if(pairSizeX <= itemWidths[stripY[j][c]][stripY[j][c+1]] && stripSumX[i] - pairSizeX + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripLength){
+                            if(pairSizeX <= itemWidths[stripY[j][c]][stripY[j][c+1]] && stripSumX[i] - pairSizeX + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripWidth){
                                 swapType = 2;
                                 if(stripX[i].size() == 4){ //If stripX[i] only contains 2 boxes
                                     if(stripY[j].size() == 2){ //If stripY[j] only contains 1 box
@@ -536,7 +535,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vect
                 for(c = 0; c < stripY[j].size()-1; c+=2){ //Starting from the first score on the first box until the first score on the last box
                     //Check if boxwidth[a] < boxWidth[c] and that box can fit on strip
                     if(itemWidths[stripX[i][a]][stripX[i][a+1]] < itemWidths[stripY[j][c]][stripY[j][c+1]]
-                       && stripSumX[i] - itemWidths[stripX[i][a]][stripX[i][a+1]] + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripLength){
+                       && stripSumX[i] - itemWidths[stripX[i][a]][stripX[i][a+1]] + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripWidth){
                         swapType = 3;
                         if(stripX[i].size() == 2){ //If stripX[i] only contains 1 box
                             if(stripY[j].size() == 2){ //If stripY[j] only contains 1 box
@@ -582,7 +581,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vect
     for(j = 0; j < stripY.size(); ++j){ //For each strip in the set stripY
         for(c = 0; c < stripY[j].size()-1; c+=2){ //Starting from the first score on the first box until the first score on the last box
             for(i = 0; i < stripX.size(); ++i){ //For each strip in the set stripX
-                if(stripSumX[i] + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripLength){
+                if(stripSumX[i] + itemWidths[stripY[j][c]][stripY[j][c+1]] <= stripWidth){
                     swapType = 4;
                     if(stripY[j].size() == 2){ //If stripY[j] only contains one box
                         moveType = 41;
@@ -664,7 +663,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vect
             stripSumY.push_back(0);
         }
 
-        PartialFFD(numScores, maxItemWidth, stripLength, partners, adjMatrix, itemWidths, partialItem, stripSumY,
+        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, partialItem, stripSumY,
                    stripY);
 
         //join sets stripX and stripY together back into vector<vector<int> > strip
@@ -1236,8 +1235,7 @@ void AHCA(int tau, int &feasible, vector<int> &scores, vector<int> &original, ve
 }
 
 
-void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int> &scores, vector<int> &order,
-                  vector<int> &partnersX){
+void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int> &scores, vector<int> &order, vector<int> &partnersX){
 
     int i, j;
     //int vacant = 999;
@@ -1718,9 +1716,9 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
 }
 
 
-void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripLength, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
+void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
         vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum,
-        vector<vector<vector<int> > > &population){
+        vector<vector<vector<int> > > &population, vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips){
 
     int i, j, k, l;
     vector<vector<int> > stripX;
@@ -1737,12 +1735,13 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripLength, i
         l = rand() % population.size();
     }
 
-
+    //parent1
     for(i = 0; i < population[k].size(); ++i){
         stripX.push_back(population[k][i]);
         stripSumX.push_back(populationSum[k][i]);
     }
 
+    //parent2
     for(i = 0; i < population[l].size(); ++i){
         stripY.push_back(population[l][i]);
         stripSumY.push_back(populationSum[l][i]);
@@ -1780,19 +1779,28 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripLength, i
     }
     cout << endl << endl;*/
 
-    double parent1Cost = Fitness(stripLength, stripSumX, stripX);
-    double parent2Cost = Fitness(stripLength, stripSumY, stripY);
+    double parent1Cost = Fitness(stripWidth, stripSumX, stripX);
+    double parent2Cost = Fitness(stripWidth, stripSumY, stripY);
 
     //If GGA operator is chosen
     if(recomb == 1){
-        GGA(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring, stripSumX, stripX, stripSumY, stripY);
+        GGA(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring, stripSumX, stripX, stripSumY, stripY);
     }
-        //If GPX' operator chosen
+    //If GPX' operator chosen
     else if(recomb == 2) {
-        GPX(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring, stripSumX, stripX, stripSumY, stripY);
+        GPX(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring, stripSumX, stripX, stripSumY, stripY);
     }
 
-    double offspringCost = Fitness(stripLength, offspringSum, offspring);
+    /**Here we need to find best strips from offspring and put in a separate set before putting offspring in population**/
+    double limit = 0.8 * static_cast<double>(stripWidth);
+    for(i = 0; i < offspringSum.size(); ++i){
+        if(offspringSum[i] >= limit){
+            qualityStrips.push_back(offspring[i]);
+            qualityStripsSum.push_back(offspringSum[i]);
+        }
+    }
+
+    double offspringCost = Fitness(stripWidth, offspringSum, offspring);
 
     if(parent1Cost < parent2Cost){ //Fitness of parent solution put in stripX worse than Fitness of parent solution put in stripY, replace population[k]
         offspring.swap(population[k]);
@@ -1834,7 +1842,7 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripLength, i
 }
 
 
-void GGA(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
          vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring,
          vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY){
 
@@ -1890,7 +1898,7 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> 
         //cout << "absentItems vector is empty - no boxes are missing\n";
         stripX.swap(offspring);
         stripSumX.swap(offspringSum);
-        //Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
+        //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
     }
     else if(absentItems.size() % 2 == 0){
         //sort(absentItems.begin(), absentItems.end());
@@ -1906,13 +1914,13 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> 
         }
         cout << endl;*/
 
-        PartialFFD(numScores, maxItemWidth, stripLength, partners, adjMatrix, itemWidths, absentItems, stripSumY,
+        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, absentItems, stripSumY,
                    stripY);
 
-        LocalSearch(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum,
+        LocalSearch(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum,
                     offspring, stripSumX, stripX, stripSumY, stripY);
 
-        //Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
+        //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
 
     }
     else{
@@ -1922,7 +1930,7 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> 
 
 }
 
-void GPX(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
          vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring, vector<int> &stripSumX, vector<vector<int> > &stripX,
          vector<int> &stripSumY, vector<vector<int> > &stripY){
 
@@ -2077,7 +2085,7 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> 
     }
 
     if(absentItems.empty()){
-        //Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
+        //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
     }
     else if(absentItems.size() % 2 == 0){
         //sort(absentItems.begin(), absentItems.end());
@@ -2097,13 +2105,13 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> 
         }
         cout << endl;*/
 
-        PartialFFD(numScores, maxItemWidth, stripLength, partners, adjMatrix, itemWidths, absentItems, stripSumY,
+        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, absentItems, stripSumY,
                    stripY);
 
-        LocalSearch(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum,
+        LocalSearch(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum,
                     offspring, stripSumX, stripX, stripSumY, stripY);
 
-        //Mutation(tau, numScores, maxItemWidth, stripLength, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
+        //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum, offspring);
 
 
     }

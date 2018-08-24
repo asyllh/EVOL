@@ -14,33 +14,33 @@ using namespace std;
 
 void Swap(int &a, int &b);
 
-int LowerBound(int stripLength, double totalItemWidth);
+int LowerBound(int stripWidth, double totalItemWidth);
 
-double Fitness(int stripLength, vector<int> &stripSum, vector<vector<int> > &strip);
+double Fitness(int stripWidth, vector<int> &stripSum, vector<vector<int> > &strip);
 
 void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, vector<vector<int> > &itemWidths,
          vector<int> &itemOrder);
 
 void FFR(int numScores, int numItem, vector<int> &partners, vector<vector<int> > &itemWidths, vector<int> &itemOrder);
 
-void FFShell(int numScores, int numItem, int maxItemWidth, int stripLength, vector<int> &partners,
+void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &partners,
              vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, bool decrease);
 
 
-void PartialFFD(int numScores, int maxItemWidth, int stripLength, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void PartialFFD(int numScores, int maxItemWidth, int stripWidth, vector<int> &partners, vector<vector<int> > &adjMatrix,
                 vector<vector<int> > &itemWidths, vector<int> &partialItem, vector<int> &partialSum, vector<vector<int> > &partialSol);
 
 
-void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners,
+void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
                    vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population);
 
 
-void Mutation(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners,
+void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
               vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum,
               vector<vector<int> > &strip);
 
 
-void LocalSearch(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
                  vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, vector<int> &stripSumX, vector<vector<int> > &stripX,
                  vector<int> &stripSumY, vector<vector<int> > &stripY);
 
@@ -69,14 +69,15 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
         vector<int> &cycleVertex, vector<int> &edge, vector<vector<int> > &adjMat, vector<vector<int> > &C, vector<vector<int> > &S, vector<int> &altHam);
 
 
-void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripLength, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
-        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population);
+void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
+        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population,
+        vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips);
 
-void GGA(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
          vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring,
          vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY);
 
-void GPX(int tau, int numScores, int maxItemWidth, int stripLength, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
+void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
          vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring, vector<int> &stripSumX, vector<vector<int> > &stripX,
          vector<int> &stripSumY, vector<vector<int> > &stripY);
 
