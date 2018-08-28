@@ -200,6 +200,7 @@ int main(int argc, char **argv){
 
     vector<vector<int> > qualityStrips;
     vector<int> qualityStripsSum;
+    vector<int> qualityItems(numItem, 0);
 
     srand(randomSeed);
     Timer timer;
@@ -234,8 +235,8 @@ int main(int argc, char **argv){
 
 
     for(iteration = 0; iteration < numIterations; ++iteration) {
-        EA(tau, xOver, numScores, maxItemWidth, stripWidth, bestEnd, bestFitness, allScores, partners, adjMatrix, itemWidths, populationSum, population,
-           qualityStripsSum, qualityStrips);
+        EA(tau, xOver, numScores, maxItemWidth, stripWidth, bestEnd, bestFitness, allScores, partners, adjMatrix, itemWidths, allItems, populationSum, population,
+           qualityStripsSum, qualityStrips, qualityItems);
     }
 
     cout << "qualityStrip\n";
@@ -253,6 +254,11 @@ int main(int argc, char **argv){
     }
     cout << endl << endl;
 
+    cout << "qualityItems\n";
+    for(i = 0; i < qualityItems.size(); ++i){
+        cout << qualityItems[i] << " ";
+    }
+    cout << endl << endl;
 
     cout << "END - Best solution in the population:\n";
     cout << "Solution: " << bestEnd << "\nFitness: " << bestFitness << "\nSize: " << population[bestEnd].size() << " strips." << endl << endl;
