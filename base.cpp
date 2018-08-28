@@ -99,12 +99,12 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
         }
     }
 
-    k = 1;
+    k = 0;
     for(i = 0; i < numScores; ++i){
         for(j = i+1; j < numScores; ++j){
             if(adjMatrix[i][j] == 2){
                 allItems[i][j] = k;
-                allItems[j][i] = k * -1;
+                allItems[j][i] = k;
                 ++k;
                 break;
             }
