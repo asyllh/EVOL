@@ -70,8 +70,8 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
 
 
 void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
-        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population,
-        vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips);
+        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &allItems, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population,
+        vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips, vector<int> &qualityItems);
 
 void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
          vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring,

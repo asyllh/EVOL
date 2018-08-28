@@ -1717,8 +1717,8 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
 
 
 void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
-        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum,
-        vector<vector<vector<int> > > &population, vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips){
+        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &allItems, vector<vector<int> > &populationSum,
+        vector<vector<vector<int> > > &population, vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips, vector<int> &qualityItems){
 
     int i, j, k, l;
     vector<vector<int> > stripX;
@@ -1792,9 +1792,13 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, in
     }
 
     /**Here we need to find best strips from offspring and put in a separate set before putting offspring in population**/
+
     double limit = 0.8 * static_cast<double>(stripWidth);
     for(i = 0; i < offspringSum.size(); ++i){
         if(offspringSum[i] >= limit){
+            for(j = 0; j < offspring[i].size()-1; j+=2){
+                ++qualityItems[allItems[offspring[i][j]][offspring[i][j+1]]];
+            }
             qualityStrips.push_back(offspring[i]);
             qualityStripsSum.push_back(offspringSum[i]);
         }
@@ -1837,7 +1841,6 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, in
             }
         }
     }
-
 
 }
 
