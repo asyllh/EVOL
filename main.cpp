@@ -260,6 +260,23 @@ int main(int argc, char **argv){
     }
     cout << endl << endl;
 
+    vector<vector<int> > A(numItem, vector<int>(qualityStrips.size(), 0));
+
+    for(i = 0; i < qualityStrips.size(); ++i){
+        for(j = 0; j < qualityStrips[i].size() -1; j+=2){
+            A[allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]][i] = 1;
+        }
+    }
+
+    cout << "Matrix A\n";
+    for (i = 0; i < A.size(); ++i){
+        for(j = 0; j < A[i].size(); ++j){
+            cout << A[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
+
     cout << "END - Best solution in the population:\n";
     cout << "Solution: " << bestEnd << "\nFitness: " << bestFitness << "\nSize: " << population[bestEnd].size() << " strips." << endl << endl;
 
