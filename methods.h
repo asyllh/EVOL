@@ -9,76 +9,88 @@ Evolutionary Algorithm with Local Search
 #define EVOL_METHODS_H
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
-using namespace std;
 
-void Swap(int &a, int &b);
+
+void Swap(int& a, int& b);
 
 int LowerBound(int stripWidth, double totalItemWidth);
 
-double Fitness(int stripWidth, vector<int> &stripSum, vector<vector<int> > &strip);
+double Fitness(int stripWidth, std::vector<int>& stripSum, std::vector<std::vector<int> >& strip);
 
-void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, vector<vector<int> > &itemWidths,
-         vector<int> &itemOrder);
+void FFD(int numScores, int numItem, int maxItemWidth, std::vector<int>& partners, std::vector<std::vector<int> >& itemWidths,
+         std::vector<int>& itemOrder);
 
-void FFR(int numScores, int numItem, vector<int> &partners, vector<vector<int> > &itemWidths, vector<int> &itemOrder);
+void FFR(int numScores, int numItem, std::vector<int>& partners, std::vector<std::vector<int> >& itemWidths, std::vector<int>& itemOrder);
 
-void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &partners,
-             vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, bool decrease);
-
-
-void PartialFFD(int numScores, int maxItemWidth, int stripWidth, vector<int> &partners, vector<vector<int> > &adjMatrix,
-                vector<vector<int> > &itemWidths, vector<int> &partialItem, vector<int> &partialSum, vector<vector<int> > &partialSol);
+void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& partners,
+             std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
+             std::vector<std::vector<int> >& strip, bool decrease);
 
 
-void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
-                   vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population);
+void PartialFFD(int numScores, int maxItemWidth, int stripWidth, std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix,
+                std::vector<std::vector<int> >& itemWidths, std::vector<int>& partialItem, std::vector<int>& partialSum,
+                std::vector<std::vector<int> >& partialSol);
 
 
-void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
-              vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum,
-              vector<vector<int> > &strip);
+void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
+                   std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population);
 
 
-void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-                 vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, vector<int> &stripSumX, vector<vector<int> > &stripX,
-                 vector<int> &stripSumY, vector<vector<int> > &stripY);
+void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+              std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
+              std::vector<std::vector<int> >& strip);
 
 
-void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1, int b1, int j1, int c1, int d1, vector<int> &allScores,
-              vector<vector<int> > &itemWidths, vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY);
+void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
+                 std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+                 std::vector<int>& stripSum, std::vector<std::vector<int> >& strip, std::vector<int>& stripSumX,
+                 std::vector<std::vector<int> >& stripX, std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY);
 
 
-void AHCA(int tau, int &feasible, vector<int> &scores, vector<int> &original, vector<int> &final);
+void InitAHCA(int tau, int swapType, int moveType, int& feasible, int i1, int a1, int b1, int j1, int c1, int d1,
+              std::vector<int>& allScores, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSumX,
+              std::vector<std::vector<int> >& stripX, std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY);
 
 
-void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int> &scores, vector<int> &order,
-                  vector<int> &partnersX);
+void AHCA(int tau, int& feasible, std::vector<int>& scores, std::vector<int>& original, std::vector<int>& final);
 
 
-void MMCM(int nScores, int &matchSize, vector<vector<int> > &adjMat, vector<int> &partnersX, vector<int> &matchList, vector<int> &cycleVertex);
+void InitInstance(int tau, int nScores, std::vector<std::vector<int> >& adjMat, std::vector<int>& scores,
+                  std::vector<int>& order, std::vector<int>& partnersX);
 
 
-void MPS(int nScores, int &nCycles, vector<int> &partnersX, vector<int> &matchList, vector<vector<int> > &mpStructure);
+void MMCM(int nScores, int& matchSize, std::vector<std::vector<int> >& adjMat, std::vector<int>& partnersX, std::vector<int>& matchList,
+          std::vector<int>& cycleVertex);
 
 
-void BR(int &qstar, int matchSize, vector<vector<int> > &adjMat, vector<int> &matchList, vector<int> &cycleVertex, vector<int> &edge,
-        vector<vector<int> > &mpStructure, vector<vector<int> > &C, vector<vector<int> > &S);
-
-void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<int> &partnersX, vector<int> &matchList,
-        vector<int> &cycleVertex, vector<int> &edge, vector<vector<int> > &adjMat, vector<vector<int> > &C, vector<vector<int> > &S, vector<int> &altHam);
+void MPS(int nScores, int& nCycles, std::vector<int>& partnersX, std::vector<int>& matchList, std::vector<std::vector<int> >& mpStructure);
 
 
-void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
-        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &allItems, vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population,
-        vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips, vector<int> &qualityItems);
+void BR(int& qstar, int matchSize, std::vector<std::vector<int> >& adjMat, std::vector<int>& matchList, std::vector<int>& cycleVertex,
+        std::vector<int>& edge, std::vector<std::vector<int> >& mpStructure, std::vector<std::vector<int> >& C,
+        std::vector<std::vector<int> >& S);
 
-void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-         vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring,
-         vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY);
+void CP(int nScores, int nComp, int& feasible, int qstar, int nCycles, std::vector<int>& partnersX, std::vector<int>& matchList,
+        std::vector<int>& cycleVertex, std::vector<int>& edge, std::vector<std::vector<int> >& adjMat, std::vector<std::vector<int> >& C,
+        std::vector<std::vector<int> >& S, std::vector<int>& altHam);
 
-void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-         vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring, vector<int> &stripSumX, vector<vector<int> > &stripX,
-         vector<int> &stripSumY, vector<vector<int> > &stripY);
+
+void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int& bestEnd, double& bestFitness, std::vector<int>& allScores,
+        std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+        std::vector<std::vector<int> >& allItems, std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population,
+        std::vector<int>& qualityStripsSum, std::vector<std::vector<int> >& qualityStrips, std::vector<int>& qualityItems);
+
+void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+         std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& offspringSum,
+         std::vector<std::vector<int> >& offspring, std::vector<int>& stripSumX, std::vector<std::vector<int> >& stripX,
+         std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY);
+
+void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+         std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& offspringSum,
+         std::vector<std::vector<int> >& offspring, std::vector<int>& stripSumX, std::vector<std::vector<int> >& stripX,
+         std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY);
 
 #endif

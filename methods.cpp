@@ -5,13 +5,11 @@ Evolutionary Algorithm with Local Search
 23/08/18
 /--------------*/
 
-#include <algorithm>
-#include <cmath>
-//#include <iomanip>
-#include "methods.h"
-using namespace std;
 
-void Swap(int &a, int &b){
+#include "methods.h"
+
+
+void Swap(int& a, int& b){
     int temp = a;
     a = b;
     b = temp;
@@ -20,11 +18,11 @@ void Swap(int &a, int &b){
 int LowerBound(int stripWidth, double totalItemWidth){
     int lBound;
 
-    lBound = ceil(totalItemWidth/stripWidth);
+    lBound = std::ceil(totalItemWidth/stripWidth);
     return lBound;
 }
 
-double Fitness(int stripWidth, vector<int> &stripSum, vector<vector<int> > &strip){
+double Fitness(int stripWidth, std::vector<int>& stripSum, std::vector<std::vector<int> >& strip){
 
     int i;
     double total = 0.0;
@@ -41,12 +39,13 @@ double Fitness(int stripWidth, vector<int> &stripSum, vector<vector<int> > &stri
 
 }
 
-void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, vector<vector<int> > &itemWidths, vector<int> &itemOrder){
+void FFD(int numScores, int numItem, int maxItemWidth, std::vector<int>& partners, std::vector<std::vector<int> >& itemWidths,
+         std::vector<int>& itemOrder){
 
     int i, mini;
     int min = 0;
     int max = maxItemWidth;
-    vector<int> checked(numScores, 0);
+    std::vector<int> checked(numScores, 0);
 
     while(itemOrder.size() < numItem) {
         for (i = 0; i < numScores; ++i) {
@@ -68,10 +67,10 @@ void FFD(int numScores, int numItem, int maxItemWidth, vector<int> &partners, ve
 
 }
 
-void FFR(int numScores, int numItem, vector<int> &partners, vector<vector<int> > &itemWidths, vector<int> &itemOrder){
+void FFR(int numScores, int numItem, std::vector<int>& partners, std::vector<std::vector<int> >& itemWidths, std::vector<int>& itemOrder){
 
-    int i, r;
-    vector<int> checked(numScores, 0);
+    int r;
+    std::vector<int> checked(numScores, 0);
 
     while(itemOrder.size() < numItem){
         r = rand() % numScores;
@@ -94,11 +93,12 @@ void FFR(int numScores, int numItem, vector<int> &partners, vector<vector<int> >
 
 }
 
-void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &partners,
-             vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, bool decrease){
+void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& partners,
+             std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
+             std::vector<std::vector<int> >& strip, bool decrease){
 
     int i, j, k, l;
-    vector<int> itemOrder;
+    std::vector<int> itemOrder;
 
     if(decrease){
         FFD(numScores, numItem, maxItemWidth, partners, itemWidths, itemOrder);
@@ -186,14 +186,15 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, vecto
 
 }
 
-void PartialFFD(int numScores, int maxItemWidth, int stripWidth, vector<int> &partners, vector<vector<int> > &adjMatrix,
-                vector<vector<int> > &itemWidths, vector<int> &partialItem, vector<int> &partialSum, vector<vector<int> > &partialSol){
+void PartialFFD(int numScores, int maxItemWidth, int stripWidth, std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix,
+                std::vector<std::vector<int> >& itemWidths, std::vector<int>& partialItem, std::vector<int>& partialSum,
+                std::vector<std::vector<int> >& partialSol){
 
     int i, j, mini, k, l;
     int min = 0;
     int max = maxItemWidth;
-    vector<int> itemDecrease;
-    vector<int> checked(numScores, 0);
+    std::vector<int> itemDecrease;
+    std::vector<int> checked(numScores, 0);
 
 
     while(itemDecrease.size() < partialItem.size()/2) {
@@ -287,13 +288,13 @@ void PartialFFD(int numScores, int maxItemWidth, int stripWidth, vector<int> &pa
 
 }
 
-void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners,
-                   vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths,
-                   vector<vector<int> > &populationSum, vector<vector<vector<int> > > &population){
+void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
+                   std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population){
 
     int i, j, k, l;
-    vector<vector<int> > strip(numItem);
-    vector<int> stripSum(numItem, 0);
+    std::vector<std::vector<int> > strip(numItem);
+    std::vector<int> stripSum(numItem, 0);
 
     FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, true);
 
@@ -337,23 +338,24 @@ void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemW
 
 }
 
-void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-              vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip){
+void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+              std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
+              std::vector<std::vector<int> >& strip){
 
-    int i, j;
-    vector<int> stripSumX;
-    vector<vector<int> > stripX;
-    vector<int> stripSumY;
-    vector<vector<int> > stripY;
-    vector<int> randOrder;
+    int i;
+    std::vector<int> stripSumX;
+    std::vector<std::vector<int> > stripX;
+    std::vector<int> stripSumY;
+    std::vector<std::vector<int> > stripY;
+    std::vector<int> randOrder;
 
-    //cout << "mutation\n";
+    //cout << "Mutation\n";
 
     for(i = 0; i < strip.size(); ++i){
         randOrder.push_back(i);
     }
 
-    random_shuffle(randOrder.begin(), randOrder.end());
+    std::random_shuffle(randOrder.begin(), randOrder.end());
 
     int r = rand() % (strip.size() -1) + 1;
 
@@ -367,15 +369,15 @@ void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, vector<i
         stripSumY.push_back(stripSum[randOrder[i]]);
     }
 
-
     LocalSearch(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip,
                 stripSumX, stripX, stripSumY, stripY);
 
 }
 
-void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-                 vector<vector<int> > &itemWidths, vector<int> &stripSum, vector<vector<int> > &strip, vector<int> &stripSumX, vector<vector<int> > &stripX,
-                 vector<int> &stripSumY, vector<vector<int> > &stripY){
+void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
+                 std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+                 std::vector<int>& stripSum, std::vector<std::vector<int> >& strip, std::vector<int>& stripSumX,
+                 std::vector<std::vector<int> >& stripX, std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY){
 
     int a, b, c, d, i, j, k, l, pairSizeX, pairSizeY;
     int swapType, moveType, feasible;
@@ -404,7 +406,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                         //cout << "i: " << i << " j: " << j << " a: " << a << " b: " << b << " c: " << c << " d: " << d << endl;
                                         if(stripX[i].size() == 4){ //If stripX[i] only contains 2 boxes
                                             if(stripY[j].size() == 4){ //If stripY[j] only contains 2 boxes
-                                                //Do a straight Swap, no need for AHCA
+                                                //Do a straight swap, no need for AHCA
                                                 stripX[i].swap(stripY[j]);
                                                 Swap(stripSumX[i], stripSumY[j]);
                                                 feasible = 1;
@@ -413,14 +415,12 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                                 //Only perform AHCA on stripY[j]
                                                 moveType = 11;
                                                 InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                         itemWidths,
-                                                         stripSumX, stripX, stripSumY, stripY);
+                                                         itemWidths, stripSumX, stripX, stripSumY, stripY);
                                             }
                                             else{ //IIf stripY[j] contains more than 2 boxes & boxes c and d are not adjacent
                                                 moveType = 0;
                                                 InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                         itemWidths,
-                                                         stripSumX, stripX, stripSumY, stripY);
+                                                         itemWidths, stripSumX, stripX, stripSumY, stripY);
                                             }
                                         }
                                         else if (stripY[j].size() == 4){ //If stripY[j] only contains 2 boxes but stripX[i] contains > 2 boxes
@@ -428,21 +428,18 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                                 //Only perform AHCA on stripX[i]
                                                 moveType = 12;
                                                 InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                         itemWidths,
-                                                         stripSumX, stripX, stripSumY, stripY);
+                                                         itemWidths, stripSumX, stripX, stripSumY, stripY);
                                             }
                                             else{ //If boxes a and b are not adjacent
                                                 moveType = 0;
                                                 InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                         itemWidths,
-                                                         stripSumX, stripX, stripSumY, stripY);
+                                                         itemWidths, stripSumX, stripX, stripSumY, stripY);
                                             }
                                         }
                                         else{ //If stripX[i].size() > 4 && stripY[j[.size() > 4
                                             moveType = 0;
                                             InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                     itemWidths,
-                                                     stripSumX, stripX, stripSumY, stripY);
+                                                     itemWidths, stripSumX, stripX, stripSumY, stripY);
                                         }
                                         if(feasible == 1){
                                             goto PairSin;
@@ -478,7 +475,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                 swapType = 2;
                                 if(stripX[i].size() == 4){ //If stripX[i] only contains 2 boxes
                                     if(stripY[j].size() == 2){ //If stripY[j] only contains 1 box
-                                        //straight Swap
+                                        //straight swap
                                         stripX[i].swap(stripY[j]);
                                         Swap(stripSumX[i], stripSumY[j]);
                                         feasible = 1;
@@ -487,8 +484,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                         //Only perform AHCA on stripY[j]
                                         moveType = 21;
                                         InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                 itemWidths,
-                                                 stripSumX, stripX, stripSumY, stripY);
+                                                 itemWidths, stripSumX, stripX, stripSumY, stripY);
                                     }
                                 }
                                 else if(stripY[j].size() == 2){ //If stripY[j] only contains 1 box, but stripX[i] contains > 2 boxes
@@ -496,14 +492,12 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                         //Only perform AHCA on stripX[i]
                                         moveType = 22;
                                         InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                 itemWidths,
-                                                 stripSumX, stripX, stripSumY, stripY);
+                                                 itemWidths, stripSumX, stripX, stripSumY, stripY);
                                     }
                                     else{ //If the two boxes chosen from stripX[i] are not adjacent to one another
                                         moveType = 0;
                                         InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
-                                                 itemWidths,
-                                                 stripSumX, stripX, stripSumY, stripY);
+                                                 itemWidths, stripSumX, stripX, stripSumY, stripY);
                                     }
                                 }
                                 else { //If stripX[i].size() > 4 && stripY[j].size() > 2
@@ -539,7 +533,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                         swapType = 3;
                         if(stripX[i].size() == 2){ //If stripX[i] only contains 1 box
                             if(stripY[j].size() == 2){ //If stripY[j] only contains 1 box
-                                //straight Swap
+                                //straight swap
                                 stripX[i].swap(stripY[j]);
                                 Swap(stripSumX[i], stripSumY[j]);
                                 feasible = 1;
@@ -599,8 +593,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
                                  stripSumX, stripX, stripSumY, stripY);
                     }
                     if(feasible == 2){
-                        //++count;
-                        //cout << 44 << ": MoveSin\n";
                         goto End;
                     }
                     else if(feasible == 1){
@@ -612,8 +604,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
     }
     //cout << "NO SINGLE MOVE PERFORMED.\n\n";
     //endregion
-
-
 
     End:
     //cout << "Local Search complete\n-------------------\n";
@@ -648,13 +638,13 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
     else{
         //Do FFD on stripY
 
-        vector<int> partialItem;
+        std::vector<int> partialItem;
         for(i = 0; i < stripY.size(); ++i){
             for(j = 0; j < stripY[i].size(); ++j){
                 partialItem.push_back(stripY[i][j]);
             }
         }
-        sort(partialItem.begin(), partialItem.end());
+        std::sort(partialItem.begin(), partialItem.end());
 
         stripY.clear();
         stripY.resize(partialItem.size()/2);
@@ -707,17 +697,18 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, vecto
 
 }
 
-void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1, int b1, int j1, int c1, int d1, vector<int> &allScores,
-              vector<vector<int> > &itemWidths, vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY){
+void InitAHCA(int tau, int swapType, int moveType, int& feasible, int i1, int a1, int b1, int j1, int c1, int d1,
+              std::vector<int>& allScores, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSumX,
+              std::vector<std::vector<int> >& stripX, std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY){
 
     int k;
     feasible = 0;
-    vector<int> scoresX;
-    vector<int> scoresY;
-    vector<int> originalX;
-    vector<int> originalY;
-    vector<int> finalX;
-    vector<int> finalY;
+    std::vector<int> scoresX;
+    std::vector<int> scoresY;
+    std::vector<int> originalX;
+    std::vector<int> originalY;
+    std::vector<int> finalX;
+    std::vector<int> finalY;
 
     //region swapType == 1
     /**PAIRPAIR**/
@@ -733,7 +724,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                 }
                 scoresY.push_back(allScores[stripY[j1][k]]);
                 originalY.push_back(stripY[j1][k]);
-
             }
             scoresY.push_back(allScores[stripX[i1][a1]]);
             originalY.push_back(stripX[i1][a1]);
@@ -764,7 +754,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                 }
                 scoresX.push_back(allScores[stripX[i1][k]]);
                 originalX.push_back(stripX[i1][k]);
-
             }
             scoresX.push_back(allScores[stripY[j1][c1]]);
             originalX.push_back(stripY[j1][c1]);
@@ -802,7 +791,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                 }
                 scoresX.push_back(allScores[stripX[i1][k]]);
                 originalX.push_back(stripX[i1][k]);
-
             }
             scoresX.push_back(allScores[stripY[j1][c1]]);
             originalX.push_back(stripY[j1][c1]);
@@ -824,7 +812,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                     }
                     scoresY.push_back(allScores[stripY[j1][k]]);
                     originalY.push_back(stripY[j1][k]);
-
                 }
                 scoresY.push_back(allScores[stripX[i1][a1]]);
                 originalY.push_back(stripX[i1][a1]);
@@ -863,7 +850,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                 }
                 scoresY.push_back(allScores[stripY[j1][k]]);
                 originalY.push_back(stripY[j1][k]);
-
             }
             scoresY.push_back(allScores[stripX[i1][a1]]);
             originalY.push_back(stripX[i1][a1]);
@@ -942,7 +928,6 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                     }
                     scoresY.push_back(allScores[stripY[j1][k]]);
                     originalY.push_back(stripY[j1][k]);
-
                 }
                 scoresY.push_back(allScores[stripX[i1][a1]]);
                 originalY.push_back(stripX[i1][a1]);
@@ -1123,7 +1108,7 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
                     stripX[i1].swap(finalX);
                 }
                 else{
-                    cout << "[ERROR]: c1 in stripY[j1] is neither 0 nor 2, check that stripY[j1].size() == 4\n";
+                    std::cout << "[ERROR]: c1 in stripY[j1] is neither 0 nor 2, check that stripY[j1].size() == 4\n";
                     exit(1);
                 }
 
@@ -1167,10 +1152,10 @@ void InitAHCA(int tau, int swapType, int moveType, int &feasible, int i1, int a1
     } //End swapType = 4
     //endregion
 
-} //End void initAHCA
+} //End void InitAHCA
 
 
-void AHCA(int tau, int &feasible, vector<int> &scores, vector<int> &original, vector<int> &final){
+void AHCA(int tau, int& feasible, std::vector<int>& scores, std::vector<int>& original, std::vector<int>& final){
 
     feasible = 0;
     int i, j, qstar;
@@ -1181,16 +1166,16 @@ void AHCA(int tau, int &feasible, vector<int> &scores, vector<int> &original, ve
     int nScores = scores.size();
     int nItem = scores.size() / 2;
     int nComp = (nItem + (nItem % 2)) / 2;
-    vector<int> order;
-    vector<int> altHam;
-    vector<int> cycleVertex(nScores, 1);
-    vector<int> partnersX(nScores, vacant);
-    vector<int> matchList(nScores, vacant);
-    vector<int> edge;
-    vector<vector<int> > C;
-    vector<vector<int> > mpStructure;
-    vector<vector<int> > S(nComp, vector<int>(nComp, 0));
-    vector<vector<int> > adjMat(nScores, vector<int>(nScores, 0));
+    std::vector<int> order;
+    std::vector<int> altHam;
+    std::vector<int> cycleVertex(nScores, 1);
+    std::vector<int> partnersX(nScores, vacant);
+    std::vector<int> matchList(nScores, vacant);
+    std::vector<int> edge;
+    std::vector<std::vector<int> > C;
+    std::vector<std::vector<int> > mpStructure;
+    std::vector<std::vector<int> > S(nComp, std::vector<int>(nComp, 0));
+    std::vector<std::vector<int> > adjMat(nScores, std::vector<int>(nScores, 0));
 
     do {
         once = 1;
@@ -1235,11 +1220,12 @@ void AHCA(int tau, int &feasible, vector<int> &scores, vector<int> &original, ve
 }
 
 
-void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int> &scores, vector<int> &order, vector<int> &partnersX){
+void InitInstance(int tau, int nScores, std::vector<std::vector<int> >& adjMat, std::vector<int>& scores,
+                  std::vector<int>& order, std::vector<int>& partnersX){
 
     int i, j;
     //int vacant = 999;
-    vector<int> invOrder(nScores);
+    std::vector<int> invOrder(nScores);
 
     for (i = 0; i < nScores; ++i) {
         order.push_back(i);
@@ -1263,7 +1249,7 @@ void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int
         adjMat[invOrder[i + 1]][invOrder[i]] = 2;
     }
 
-    sort(scores.begin(), scores.end());
+    std::sort(scores.begin(), scores.end());
 
     for (i = 0; i < scores.size() - 1; ++i) {
         for (j = i + 1; j < scores.size(); ++j) {
@@ -1289,7 +1275,8 @@ void InitInstance(int tau, int nScores, vector<vector<int> > &adjMat, vector<int
 }
 
 
-void MMCM(int nScores, int &matchSize, vector<vector<int> > &adjMat, vector<int> &partnersX, vector<int> &matchList, vector<int> &cycleVertex){
+void MMCM(int nScores, int& matchSize, std::vector<std::vector<int> >& adjMat, std::vector<int>& partnersX, std::vector<int>& matchList,
+          std::vector<int>& cycleVertex){
 
     int i, j;
     int vacant = 999;
@@ -1334,12 +1321,12 @@ void MMCM(int nScores, int &matchSize, vector<vector<int> > &adjMat, vector<int>
 }
 
 
-void MPS(int nScores, int &nCycles, vector<int> &partnersX, vector<int> &matchList, vector<vector<int> > &mpStructure){
+void MPS(int nScores, int& nCycles, std::vector<int>& partnersX, std::vector<int>& matchList, std::vector<std::vector<int> >& mpStructure){
 
     int i, current;
     int smallest = nScores - 2;
-    vector<int> temp;
-    vector<int> checked(nScores, 0);
+    std::vector<int> temp;
+    std::vector<int> checked(nScores, 0);
 
     do {
         current = smallest;
@@ -1368,12 +1355,13 @@ void MPS(int nScores, int &nCycles, vector<int> &partnersX, vector<int> &matchLi
 }
 
 
-void BR(int &qstar, int matchSize, vector<vector<int> > &adjMat, vector<int> &matchList, vector<int> &cycleVertex, vector<int> &edge,
-        vector<vector<int> > &mpStructure, vector<vector<int> > &C, vector<vector<int> > &S){
+void BR(int& qstar, int matchSize, std::vector<std::vector<int> >& adjMat, std::vector<int>& matchList, std::vector<int>& cycleVertex,
+        std::vector<int>& edge, std::vector<std::vector<int> >& mpStructure, std::vector<std::vector<int> >& C,
+        std::vector<std::vector<int> >& S){
 
     int i, j, k, nEdges;
     int vacant = 999;
-    vector<int> temp;
+    std::vector<int> temp;
 
     for (i = 0; i < mpStructure.size(); ++i) {
         for (j = 0; j < mpStructure[i].size(); ++j) {
@@ -1415,8 +1403,9 @@ void BR(int &qstar, int matchSize, vector<vector<int> > &adjMat, vector<int> &ma
 }
 
 
-void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<int> &partnersX, vector<int> &matchList,
-        vector<int> &cycleVertex, vector<int> &edge, vector<vector<int> > &adjMat, vector<vector<int> > &C, vector<vector<int> > &S, vector<int> &altHam){
+void CP(int nScores, int nComp, int& feasible, int qstar, int nCycles, std::vector<int>& partnersX, std::vector<int>& matchList,
+        std::vector<int>& cycleVertex, std::vector<int>& edge, std::vector<std::vector<int> >& adjMat, std::vector<std::vector<int> >& C,
+        std::vector<std::vector<int> >& S, std::vector<int>& altHam){
 
     int a, i, j, k, l, q, u, v, SSum, SqIntS;
     int v1 = 0;
@@ -1428,16 +1417,16 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
     int maxRow;
     int type;
     //int nEdges = edge.size();
-    vector<int> temp;
-    vector<int> SSet2;
-    vector<int> SSet3;
-    vector<int> edgeCopy;
-    vector<int> connectML; //was patchML;
-    vector<int> QSet(nComp, 0);
-    vector<int> inCycle(nScores, 0);
-    vector<int> connectCycle(nComp, vacant); //was patchCycleX
-    vector<vector<int> > Cconnect;
-    vector<vector<int> > Cq;
+    std::vector<int> temp;
+    std::vector<int> SSet2;
+    std::vector<int> SSet3;
+    std::vector<int> edgeCopy;
+    std::vector<int> connectML; //was patchML;
+    std::vector<int> QSet(nComp, 0);
+    std::vector<int> inCycle(nScores, 0);
+    std::vector<int> connectCycle(nComp, vacant); //was patchCycleX
+    std::vector<std::vector<int> > Cconnect;
+    std::vector<std::vector<int> > Cq;
 
 
     for (i = 0; i < C.size(); ++i) {
@@ -1507,7 +1496,7 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
         if(type == 0){
             temp.clear();
             SSum = 0;
-            copy(edge.begin(), edge.end(), back_inserter(edgeCopy));
+            edgeCopy = edge;
             for(i = 0; i < C.size(); ++i){
                 if(C[i].size() > maxRowSize){
                     maxRowSize = C[i].size();
@@ -1682,11 +1671,11 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
 
             }
             else{
-                cout << "[ERROR]: NO TYPE.\n";
+                std::cout << "[ERROR]: NO TYPE.\n";
                 exit(1);
             }
 
-            copy(matchList.begin(), matchList.end(), back_inserter(connectML));
+            connectML = matchList;
 
             for (u = 0; u < Cconnect.size(); ++u) {
                 for (v = 0; v < Cconnect[u].size() - 1; ++v) {
@@ -1716,17 +1705,18 @@ void CP(int nScores, int nComp, int &feasible, int qstar, int nCycles, vector<in
 }
 
 
-void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int &bestEnd, double &bestFitness, vector<int> &allScores, vector<int> &partners,
-        vector<vector<int> > &adjMatrix, vector<vector<int> > &itemWidths, vector<vector<int> > &allItems, vector<vector<int> > &populationSum,
-        vector<vector<vector<int> > > &population, vector<int> &qualityStripsSum, vector<vector<int> > &qualityStrips, vector<int> &qualityItems){
+void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, int& bestEnd, double& bestFitness, std::vector<int>& allScores,
+        std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
+        std::vector<std::vector<int> >& allItems, std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population,
+        std::vector<int>& qualityStripsSum, std::vector<std::vector<int> >& qualityStrips, std::vector<int>& qualityItems){
 
     int i, j, k, l;
-    vector<vector<int> > stripX;
-    vector<vector<int> > stripY;
-    vector<vector<int> > offspring;
-    vector<int> stripSumX;
-    vector<int> stripSumY;
-    vector<int> offspringSum;
+    std::vector<std::vector<int> > stripX;
+    std::vector<std::vector<int> > stripY;
+    std::vector<std::vector<int> > offspring;
+    std::vector<int> stripSumX;
+    std::vector<int> stripSumY;
+    std::vector<int> offspringSum;
 
     /**Choose two solutions from population at random**/
     k = rand() % population.size();
@@ -1845,13 +1835,14 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, in
 }
 
 
-void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-         vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring,
-         vector<int> &stripSumX, vector<vector<int> > &stripX, vector<int> &stripSumY, vector<vector<int> > &stripY){
+void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+         std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& offspringSum,
+         std::vector<std::vector<int> >& offspring, std::vector<int>& stripSumX, std::vector<std::vector<int> >& stripX,
+         std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY){
 
     int i, j, k, l;
-    vector<int> checked(numScores, 0);
-    vector<int> absentItems;
+    std::vector<int> checked(numScores, 0);
+    std::vector<int> absentItems;
 
     /**choose these randomly**/
     k = rand() % stripY.size();
@@ -1917,8 +1908,7 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
         }
         cout << endl;*/
 
-        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, absentItems, stripSumY,
-                   stripY);
+        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, absentItems, stripSumY, stripY);
 
         LocalSearch(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, offspringSum,
                     offspring, stripSumX, stripX, stripSumY, stripY);
@@ -1927,31 +1917,32 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
 
     }
     else{
-        cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
+        std::cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
         exit(1);
     }
 
 }
 
-void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &allScores, vector<int> &partners, vector<vector<int> > &adjMatrix,
-         vector<vector<int> > &itemWidths, vector<int> &offspringSum, vector<vector<int> > &offspring, vector<int> &stripSumX, vector<vector<int> > &stripX,
-         vector<int> &stripSumY, vector<vector<int> > &stripY){
+void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,
+         std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& offspringSum,
+         std::vector<std::vector<int> >& offspring, std::vector<int>& stripSumX, std::vector<std::vector<int> >& stripX,
+         std::vector<int>& stripSumY, std::vector<std::vector<int> >& stripY){
 
     int i, j, k;
     int INST = 0;
     double r = 2.0;
-    vector<int> checked(numScores, 0);
-    vector<int> absentItems;
+    std::vector<int> checked(numScores, 0);
+    std::vector<int> absentItems;
 
     //If stripX and stripY each have a strip whose stripSums are equal and the largest of all other strips, choose between them randomly.
-    if(*max_element(stripSumX.begin(), stripSumX.end()) == *max_element(stripSumY.begin(), stripSumY.end())){
+    if(*std::max_element(stripSumX.begin(), stripSumX.end()) == *std::max_element(stripSumY.begin(), stripSumY.end())){
         r = double(rand()) / double(RAND_MAX);
     }
 
     /**Fullest strip is in stripX**/
-    if(*max_element(stripSumX.begin(), stripSumX.end()) > *max_element(stripSumY.begin(), stripSumY.end()) || r < 0.5){
+    if(*std::max_element(stripSumX.begin(), stripSumX.end()) > *std::max_element(stripSumY.begin(), stripSumY.end()) || r < 0.5){
         while(!stripX.empty() && !stripY.empty()) {
-            k = distance(stripSumX.begin(), max_element(stripSumX.begin(), stripSumX.end()));
+            k = std::distance(stripSumX.begin(), std::max_element(stripSumX.begin(), stripSumX.end()));
 
             //Mark the items in the chosen strip from stripX in the checked vector
             for (j = 0; j < stripX[k].size(); ++j) {
@@ -1981,7 +1972,7 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
             }
 
             //Now go to stripY and find the fullest strip
-            k = distance(stripSumY.begin(), max_element(stripSumY.begin(), stripSumY.end()));
+            k = std::distance(stripSumY.begin(), std::max_element(stripSumY.begin(), stripSumY.end()));
             for (j = 0; j < stripY[k].size(); ++j) {
                 checked[stripY[k][j]] = 1;
             }
@@ -2007,9 +1998,9 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
     } //End If fullest strip is in stripX
 
         /**Fullest strip is in stripY**/
-    else if(*max_element(stripSumX.begin(), stripSumX.end()) < *max_element(stripSumY.begin(), stripSumY.end()) || r >= 0.5){
+    else if(*std::max_element(stripSumX.begin(), stripSumX.end()) < *std::max_element(stripSumY.begin(), stripSumY.end()) || r >= 0.5){
         while(!stripX.empty() && !stripY.empty()) {
-            k = distance(stripSumY.begin(), max_element(stripSumY.begin(), stripSumY.end()));
+            k = std::distance(stripSumY.begin(), std::max_element(stripSumY.begin(), stripSumY.end()));
 
             //Mark the items in the chosen strip from stripY in the checked vector
             for (j = 0; j < stripY[k].size(); ++j) {
@@ -2039,7 +2030,7 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
             }
 
             //Now go to stripX and find the fullest strip
-            k = distance(stripSumX.begin(), max_element(stripSumX.begin(), stripSumX.end()));
+            k = std::distance(stripSumX.begin(), std::max_element(stripSumX.begin(), stripSumX.end()));
             for (j = 0; j < stripX[k].size(); ++j) {
                 checked[stripX[k][j]] = 1;
             }
@@ -2119,7 +2110,7 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, vector<int> &
 
     }
     else{
-        cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
+        std::cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
         exit(1);
     }
 
