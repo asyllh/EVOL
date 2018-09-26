@@ -4,12 +4,27 @@ main.cpp
 Evolutionary Algorithm with Local Search
 23/08/2018
 /--------------*/
+/** TO DO **/
+/* Need to transpose matrix A, currently the rows are items and columns are strips, we need
+   rows to be strips and coulumns to be items for it to be used in DLX
+ * Then, the problem is to find the subset of rows (strips) that contains every item
+   exactly once (i.e. every column must have an item in one of the rows)
+ * Write out to .txt file the 0-1 matrix A to be used in DLX
+ * Need to check if qualityStrips actually contains every item
+ * Check cases where item has score widths that will not meet VSC with the largest
+   score width in the set.
+ * Need to then add these items in strips to qualityStrips to use in DLX
+ * Make first row of dlxMatrix just 0, 1,...., numItems, so that in the output
+   file the first line will be 0,1,... numItems and they can be read in as the
+   column names?
+ */
 
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <iomanip>
 #include <cmath>
+#include <iterator>
 #include "base.h"
 #include "methods.h"
 
@@ -77,6 +92,8 @@ int main(int argc, char** argv){
     int iteration;
     int numScores = numItem * 2;
     double totalItemWidth;
+    double tempFitness;
+    double bestFitness = 0.0;
     std::vector<int> allScores;
     std::vector<int> partners(numScores, 0);
     std::vector<std::vector<int> > itemWidths(numScores, std::vector<int>(numScores, 0));
@@ -86,9 +103,6 @@ int main(int argc, char** argv){
     std::vector<std::vector<int> > populationSum;
     std::vector<std::vector<int> > bestSolnStart;
     std::vector<int> bestSolnStartSum;
-    double bestFitness = 0.0;
-    double tempFitness;
-
     std::vector<std::vector<int> > qualityStrips;
     std::vector<int> qualityStripsSum;
     std::vector<int> qualityItems(numItem, 0);
@@ -100,8 +114,8 @@ int main(int argc, char** argv){
                    adjMatrix, itemWidths, allItems);
 
 
-    int LB = LowerBound(stripWidth, totalItemWidth);
-    std::cout << "Lower bound: " << LB << " strips." << std::endl << std::endl;
+    int lowerBound = LowerBound(stripWidth, totalItemWidth);
+    std::cout << "Lower bound: " << lowerBound << " strips\n\n.";
 
     CreateInitPop(tau, numPop, numScores, numItem, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths,
                   populationSum, population);
@@ -130,7 +144,7 @@ int main(int argc, char** argv){
            allItems, populationSum, population, qualityStripsSum, qualityStrips, qualityItems);
     }
 
-    std::cout << "qualityStrip\n";
+    std::cout << "qualityStrips - Strips that are in qualityStrips set:\n";
     for(i = 0; i < qualityStrips.size(); ++i){
         for(j = 0; j < qualityStrips[i].size(); ++j){
             std::cout << qualityStrips[i][j] << " ";
@@ -139,34 +153,63 @@ int main(int argc, char** argv){
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << "qualityStripSum\n";
+    std::cout << "qualityStripSum - Sum of all items on each strip:\n";
     for(i = 0; i < qualityStripsSum.size(); ++i){
         std::cout << qualityStripsSum[i] << " ";
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << "qualityItems\n";
+    std::cout << "qualityItems - Number of times item appears in qualityStrips set\n";
     for(i = 0; i < qualityItems.size(); ++i){
         std::cout << qualityItems[i] << " ";
     }
     std::cout << std::endl << std::endl;
 
-    std::vector<std::vector<int> > A(numItem, std::vector<int>(qualityStrips.size(), 0));
+    //std::vector<std::vector<int> > A(numItem, std::vector<int>(qualityStrips.size(), 0));
+    //Rows of matrix are strips, columns are items
+    //std::vector<std::vector<int> > dlxMatrix(qualityStrips.size(), std::vector<int>(numItem, 0));
+    std::vector<std::vector<int> > dlxMatrix(qualityStrips.size());
 
     for(i = 0; i < qualityStrips.size(); ++i){
         for(j = 0; j < qualityStrips[i].size() -1; j+=2){
-            A[allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]][i] = 1;
+            //dlxMatrix[i][allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]] = 1;
+            dlxMatrix[i].push_back(allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]);
         }
+        std::sort(dlxMatrix[i].begin(), dlxMatrix[i].end());
+
     }
 
-    std::cout << "Matrix A\n";
-    for (i = 0; i < A.size(); ++i){
-        for(j = 0; j < A[i].size(); ++j){
-            std::cout << A[i][j] << " ";
+    std::vector<int> temp;
+    for(i = 0; i < numItem; ++i){
+        temp.push_back(i);
+    }
+
+    std::ofstream ofs("outputtest.txt");
+    if(!ofs){
+        std::cerr << "[ERROR]: Cannot write to file." << std::endl;
+        exit(1);
+    }
+    //std::copy(temp.begin(), temp.end(), std::ostream_iterator<int>(ofs, " "));
+    //std::cout << std::endl;
+
+    dlxMatrix.insert(dlxMatrix.begin(), temp);
+
+    std::cout << "dlxMatrix:\n";
+    for (i = 0; i < dlxMatrix.size(); ++i){
+        for(j = 0; j < dlxMatrix[i].size(); ++j){
+            std::cout << dlxMatrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
     std::cout << std::endl << std::endl;
+
+    for(i = 0; i < dlxMatrix.size(); ++i){
+        std::copy(dlxMatrix[i].begin(), dlxMatrix[i].end(), std::ostream_iterator<int>(ofs, " "));
+        ofs << std::endl;
+    }
+    ofs.close();
+
+
 
     std::cout << "END - Best solution in the population:\n";
     std::cout << "Solution: " << bestEnd << "\nfitness: " << bestFitness << "\nSize: " << population[bestEnd].size() << " strips." << std::endl << std::endl;
