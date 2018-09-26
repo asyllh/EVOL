@@ -33,45 +33,45 @@ void ArgumentCheck(int numIterations, int tau, int numItem, int minWidth, int ma
 
     std::cout << "Evolutionary Algorithm for the SCSPP\n------------------------------\n";
     if(tau == 0){
-        std::cout << "[ERROR]: Constraint value cannot be zero.\n";
+        std::cerr << "[ERROR]: Constraint value cannot be zero.\n";
         error = true;
     }
     if(stripWidth == 0){
-        std::cout << "[ERROR]: Strip cannot have length zero.\n";
+        std::cerr << "[ERROR]: Strip cannot have length zero.\n";
         error = true;
     }
     if(2*minWidth >= tau){
-        std::cout << "[ERROR]: Constraint value is less than or equal to twice the minimum score width, vicinal sum constraint always valid.\n";
-        std::cout << "         Problem instance is therefore classical strip-packing problem without score constraint (i.e. tau = 0).\n";
+        std::cerr << "[ERROR]: Constraint value is less than or equal to twice the minimum score width, vicinal sum constraint always valid.\n";
+        std::cerr << "         Problem instance is therefore classical strip-packing problem without score constraint (i.e. tau = 0).\n";
         error = true;
     }
     if(2*maxWidth < tau){
-        std::cout << "[ERROR]: Constraint value is greater than double maximum score width, vicinal sum constraint never valid.\n";
+        std::cerr << "[ERROR]: Constraint value is greater than double maximum score width, vicinal sum constraint never valid.\n";
         error = true;
     }
     if(2*maxWidth >= minItemWidth){
-        std::cout << "[ERROR]: Minimum item width is less than double maximum score width, scores may overlap.\n";
+        std::cerr << "[ERROR]: Minimum item width is less than double maximum score width, scores may overlap.\n";
         error = true;
     }
     if(minWidth > maxWidth){
-        std::cout << "[ERROR]: Minimum score width is greater than maximum score width.\n";
+        std::cerr << "[ERROR]: Minimum score width is greater than maximum score width.\n";
         error = true;
     }
     if(maxItemWidth > stripWidth){
-        std::cout << "[ERROR]: Maximum item width is larger than length of strip.\n";
+        std::cerr << "[ERROR]: Maximum item width is larger than length of strip.\n";
         error = true;
     }
     if(numPop < 5){
-        std::cout << "[ERROR]: Insufficient number of solutions in population.\n";
+        std::cerr << "[ERROR]: Insufficient number of solutions in population.\n";
         error = true;
     }
     if(xOver != 1 && xOver != 2){
-        std::cout << "[ERROR]: Invalid choice of recombination operator. Please choose either 1: GGA, or 2: GPX'.\n";
+        std::cerr << "[ERROR]: Invalid choice of recombination operator. Please choose either 1: GGA, or 2: GPX'.\n";
         error = true;
     }
 
     if(error){
-        std::cout << "[EXIT PROGRAM.]\n";
+        std::cerr << "[EXIT PROGRAM.]\n";
         exit(1);
     }
 

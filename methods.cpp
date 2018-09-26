@@ -1108,7 +1108,7 @@ void InitAHCA(int tau, int swapType, int moveType, int& feasible, int i1, int a1
                     stripX[i1].swap(finalX);
                 }
                 else{
-                    std::cout << "[ERROR]: c1 in stripY[j1] is neither 0 nor 2, check that stripY[j1].size() == 4\n";
+                    std::cerr << "[ERROR]: c1 in stripY[j1] is neither 0 nor 2, check that stripY[j1].size() == 4\n";
                     exit(1);
                 }
 
@@ -1671,7 +1671,7 @@ void CP(int nScores, int nComp, int& feasible, int qstar, int nCycles, std::vect
 
             }
             else{
-                std::cout << "[ERROR]: NO TYPE.\n";
+                std::cerr << "[ERROR]: NO TYPE.\n";
                 exit(1);
             }
 
@@ -1917,7 +1917,7 @@ void GGA(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<i
 
     }
     else{
-        std::cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
+        std::cerr << "[ERROR]: absentItems.size() is odd, not valid.\n";
         exit(1);
     }
 
@@ -2110,7 +2110,7 @@ void GPX(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<i
 
     }
     else{
-        std::cout << "[ERROR]: absentItems.size() is odd, not valid.\n";
+        std::cerr << "[ERROR]: absentItems.size() is odd, not valid.\n";
         exit(1);
     }
 
