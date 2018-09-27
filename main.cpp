@@ -25,6 +25,7 @@ Evolutionary Algorithm with Local Search
 #include <iomanip>
 #include <cmath>
 #include <iterator>
+#include <set>
 #include "base.h"
 #include "methods.h"
 
@@ -165,32 +166,42 @@ int main(int argc, char** argv){
     }
     std::cout << std::endl << std::endl;
 
-    //std::vector<std::vector<int> > A(numItem, std::vector<int>(qualityStrips.size(), 0));
     //Rows of matrix are strips, columns are items
-    //std::vector<std::vector<int> > dlxMatrix(qualityStrips.size(), std::vector<int>(numItem, 0));
     std::vector<std::vector<int> > dlxMatrix(qualityStrips.size());
 
     for(i = 0; i < qualityStrips.size(); ++i){
         for(j = 0; j < qualityStrips[i].size() -1; j+=2){
-            //dlxMatrix[i][allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]] = 1;
             dlxMatrix[i].push_back(allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]);
         }
         std::sort(dlxMatrix[i].begin(), dlxMatrix[i].end());
 
     }
 
-    std::vector<int> temp;
+    std::cout << "Size of dlxMatrix: " << dlxMatrix.size() << std::endl;
+
+    std::set<std::vector<int> > setQS;
+    for(i = 0; i < dlxMatrix.size(); ++i){
+        setQS.insert(dlxMatrix[i]);
+    }
+
+    std::cout << "Size of setQS: " << setQS.size() << std::endl;
+
+    std::set<std::vector<int> >::const_iterator itSet;
+    std::vector<int>::const_iterator itVector;
+
+    std::cout << "setQS:\n";
+    for(itSet = setQS.begin(); itSet != setQS.end(); ++itSet){
+        for(itVector = itSet->begin(); itVector != itSet->end(); ++itVector){
+            std::cout << *itVector << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    /*std::vector<int> temp;
     for(i = 0; i < numItem; ++i){
         temp.push_back(i);
     }
-
-    std::ofstream ofs("outputtest.txt");
-    if(!ofs){
-        std::cerr << "[ERROR]: Cannot write to file." << std::endl;
-        exit(1);
-    }
-    //std::copy(temp.begin(), temp.end(), std::ostream_iterator<int>(ofs, " "));
-    //std::cout << std::endl;
 
     dlxMatrix.insert(dlxMatrix.begin(), temp);
 
@@ -203,12 +214,17 @@ int main(int argc, char** argv){
     }
     std::cout << std::endl << std::endl;
 
+
+    std::ofstream ofs("outputtest.txt");
+    if(!ofs){
+        std::cerr << "[ERROR]: Cannot write to file." << std::endl;
+        exit(1);
+    }
     for(i = 0; i < dlxMatrix.size(); ++i){
         std::copy(dlxMatrix[i].begin(), dlxMatrix[i].end(), std::ostream_iterator<int>(ofs, " "));
         ofs << std::endl;
     }
-    ofs.close();
-
+    ofs.close();*/
 
 
     std::cout << "END - Best solution in the population:\n";
