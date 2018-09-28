@@ -12,6 +12,7 @@ Evolutionary Algorithm with Local Search
 #include <cmath>
 #include <algorithm>
 #include <vector>
+#include <set>
 
 
 void Swap(int& a, int& b);
@@ -27,7 +28,7 @@ void FFR(int numScores, int numItem, std::vector<int>& partners, std::vector<std
 
 void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& partners,
              std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
-             std::vector<std::vector<int> >& strip, bool decrease);
+             std::vector<std::vector<int> >& strip, bool decrease, std::vector<std::vector<int> >& allItems, std::set<std::vector<int> >& feasiblePacking);
 
 
 void PartialFFD(int numScores, int maxItemWidth, int stripWidth, std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix,
@@ -37,7 +38,8 @@ void PartialFFD(int numScores, int maxItemWidth, int stripWidth, std::vector<int
 
 void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
                    std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
-                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population);
+                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population,
+                   std::vector<std::vector<int> >& allItems, std::set<std::vector<int> >& feasiblePacking);
 
 
 void Mutation(int tau, int numScores, int maxItemWidth, int stripWidth, std::vector<int>& allScores, std::vector<int>& partners,

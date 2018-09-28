@@ -64,7 +64,6 @@ void FFD(int numScores, int numItem, int maxItemWidth, std::vector<int>& partner
         min = 0;
     }
 
-
 }
 
 void FFR(int numScores, int numItem, std::vector<int>& partners, std::vector<std::vector<int> >& itemWidths, std::vector<int>& itemOrder){
@@ -89,13 +88,11 @@ void FFR(int numScores, int numItem, std::vector<int>& partners, std::vector<std
         }
     }
 
-
-
 }
 
 void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& partners,
              std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths, std::vector<int>& stripSum,
-             std::vector<std::vector<int> >& strip, bool decrease){
+             std::vector<std::vector<int> >& strip, bool decrease, std::vector<std::vector<int> >& allItems, std::set<std::vector<int> >& feasiblePacking){
 
     int i, j, k, l;
     std::vector<int> itemOrder;
@@ -107,17 +104,18 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
         FFR(numScores, numItem, partners, itemWidths, itemOrder);
     }
 
-    /*cout << "Item Order:\n";
-    for(i = 0; i < itemOrder.size(); ++i){
-        cout << itemOrder[i] << " ";
+
+    //std::cout << "Item Order\n";
+    /*for(const auto& v : itemOrder){
+        std::cout << v << " ";
     }
-    cout << endl << endl;*/
+    std::cout << std::endl;*/
 
     strip[0].push_back(itemOrder[0]);
     strip[0].push_back(partners[itemOrder[0]]);
     stripSum[0] += itemWidths[itemOrder[0]][partners[itemOrder[0]]];
 
-
+    std::vector<int> tempVec;
     for(j = 1; j < itemOrder.size(); ++j){
         for(i = 0; i < strip.size(); ++i){
             if(!strip[i].empty()){
@@ -126,12 +124,24 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
                         strip[i].push_back(itemOrder[j]);
                         strip[i].push_back(partners[itemOrder[j]]);
                         stripSum[i] += itemWidths[itemOrder[j]][partners[itemOrder[j]]];
+                        for(int x = 0; x < strip[i].size()-1; x +=2){
+                            tempVec.push_back(allItems[strip[i][x]][strip[i][x+1]]);
+                        }
+                        std::sort(tempVec.begin(), tempVec.end());
+                        feasiblePacking.insert(tempVec);
+                        tempVec.clear();
                         break;
                     }
                     else if (adjMatrix[strip[i].back()][partners[itemOrder[j]]] == 1){
                         strip[i].push_back(partners[itemOrder[j]]);
                         strip[i].push_back(itemOrder[j]);
                         stripSum[i] += itemWidths[itemOrder[j]][partners[itemOrder[j]]];
+                        for(int x = 0; x < strip[i].size()-1; x+=2){
+                            tempVec.push_back(allItems[strip[i][x]][strip[i][x+1]]);
+                        }
+                        std::sort(tempVec.begin(), tempVec.end());
+                        feasiblePacking.insert(tempVec);
+                        tempVec.clear();
                         break;
                     }
                 }
@@ -174,6 +184,7 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
     }
     cout << endl;*/
 
+
     /*cout << "Strip" << setw(8) << "Width" << setw(12) << "Residual\n";
     for(i = 0; i < stripSum.size(); ++i){
         if(stripSum[i] !=0) {
@@ -181,8 +192,6 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
         }
     }
     cout << endl;*/
-
-
 
 }
 
@@ -290,13 +299,14 @@ void PartialFFD(int numScores, int maxItemWidth, int stripWidth, std::vector<int
 
 void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemWidth, int stripWidth, std::vector<int>& allScores,
                    std::vector<int>& partners, std::vector<std::vector<int> >& adjMatrix, std::vector<std::vector<int> >& itemWidths,
-                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population){
+                   std::vector<std::vector<int> >& populationSum, std::vector<std::vector<std::vector<int> > >& population,
+                   std::vector<std::vector<int> >& allItems, std::set<std::vector<int> >& feasiblePacking){
 
     int i, j, k, l;
     std::vector<std::vector<int> > strip(numItem);
     std::vector<int> stripSum(numItem, 0);
 
-    FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, true);
+    FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, true, allItems, feasiblePacking);
 
     //Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
 
@@ -311,9 +321,9 @@ void CreateInitPop(int tau, int numPop, int numScores, int numItem, int maxItemW
             stripSum.push_back(0);
         }
 
-        FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, false);
+        FFShell(numScores, numItem, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, stripSum, strip, false, allItems, feasiblePacking);
 
-       // Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
+        // Mutation(tau, numScores, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths, stripSum, strip);
 
         population.push_back(strip);
         populationSum.push_back(stripSum);
