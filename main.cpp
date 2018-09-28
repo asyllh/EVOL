@@ -116,7 +116,7 @@ int main(int argc, char** argv){
 
 
     int lowerBound = LowerBound(stripWidth, totalItemWidth);
-    std::cout << "Lower bound: " << lowerBound << " strips\n\n.";
+    std::cout << "Lower bound: " << lowerBound << " strips.\n\n";
 
     CreateInitPop(tau, numPop, numScores, numItem, maxItemWidth, stripWidth, allScores, partners, adjMatrix, itemWidths,
                   populationSum, population);
@@ -145,26 +145,26 @@ int main(int argc, char** argv){
            allItems, populationSum, population, qualityStripsSum, qualityStrips, qualityItems);
     }
 
-    std::cout << "qualityStrips - Strips that are in qualityStrips set:\n";
+    /*std::cout << "qualityStrips - Strips that are in qualityStrips set:\n";
     for(i = 0; i < qualityStrips.size(); ++i){
         for(j = 0; j < qualityStrips[i].size(); ++j){
             std::cout << qualityStrips[i][j] << " ";
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << std::endl;*/
 
-    std::cout << "qualityStripSum - Sum of all items on each strip:\n";
+    /*std::cout << "qualityStripSum - Sum of all items on each strip:\n";
     for(i = 0; i < qualityStripsSum.size(); ++i){
         std::cout << qualityStripsSum[i] << " ";
     }
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << std::endl;*/
 
-    std::cout << "qualityItems - Number of times item appears in qualityStrips set\n";
+    /*std::cout << "qualityItems - Number of times item appears in qualityStrips set\n";
     for(i = 0; i < qualityItems.size(); ++i){
         std::cout << qualityItems[i] << " ";
     }
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << std::endl;*/
 
     //Rows of matrix are strips, columns are items
     std::vector<std::vector<int> > dlxMatrix(qualityStrips.size());
@@ -176,6 +176,12 @@ int main(int argc, char** argv){
         std::sort(dlxMatrix[i].begin(), dlxMatrix[i].end());
 
     }
+    /*std::vector<int> temp;
+    for(i = 0; i < numItem; ++i){
+        temp.push_back(i);
+    }
+
+    dlxMatrix.insert(dlxMatrix.begin(), temp);*/
 
     std::cout << "Size of dlxMatrix: " << dlxMatrix.size() << std::endl;
 
@@ -189,14 +195,33 @@ int main(int argc, char** argv){
     std::set<std::vector<int> >::const_iterator itSet;
     std::vector<int>::const_iterator itVector;
 
-    std::cout << "setQS:\n";
+    /*std::cout << "setQS:\n";
     for(itSet = setQS.begin(); itSet != setQS.end(); ++itSet){
         for(itVector = itSet->begin(); itVector != itSet->end(); ++itVector){
             std::cout << *itVector << " ";
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
+    std::cout << std::endl;*/
+
+    std::ofstream ofs("settest2.txt");
+    if(!ofs){
+        std::cerr << "[ERROR]: Cannot write to file." << std::endl;
+        exit(1);
+    }
+    std::vector<int> temp;
+    for(i = 0; i < numItem; ++i){
+        temp.push_back(i);
+    }
+    std::copy(temp.begin(), temp.end(), std::ostream_iterator<int>(ofs, " "));
+    ofs << std::endl;
+    for(itSet = setQS.begin(); itSet != setQS.end(); ++itSet){
+        for(itVector = itSet->begin(); itVector != itSet->end(); ++itVector){
+            ofs << *itVector << " ";
+        }
+        ofs << std::endl;
+    }
+    ofs.close();
 
     /*std::vector<int> temp;
     for(i = 0; i < numItem; ++i){
@@ -225,6 +250,9 @@ int main(int argc, char** argv){
         ofs << std::endl;
     }
     ofs.close();*/
+
+
+
 
 
     std::cout << "END - Best solution in the population:\n";
