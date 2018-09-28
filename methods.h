@@ -9,6 +9,7 @@ Evolutionary Algorithm with Local Search
 #define EVOL_METHODS_H
 
 #include <iostream>
+#include <cmath>
 #include <algorithm>
 #include <vector>
 

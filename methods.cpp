@@ -18,7 +18,7 @@ void Swap(int& a, int& b){
 int LowerBound(int stripWidth, double totalItemWidth){
     int lBound;
 
-    lBound = std::ceil(totalItemWidth/stripWidth);
+    lBound = ceil(totalItemWidth/stripWidth);
     return lBound;
 }
 
@@ -1783,15 +1783,15 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, in
 
     /**Here we need to find best strips from offspring and put in a separate set before putting offspring in population**/
 
-    double limit = 0.8 * static_cast<double>(stripWidth);
+    //double limit = 0.8 * static_cast<double>(stripWidth);
     for(i = 0; i < offspringSum.size(); ++i){
-        if(offspringSum[i] >= limit){
+        //if(offspringSum[i] >= limit){
             for(j = 0; j < offspring[i].size()-1; j+=2){
                 ++qualityItems[allItems[offspring[i][j]][offspring[i][j+1]]];
             }
             qualityStrips.push_back(offspring[i]);
             qualityStripsSum.push_back(offspringSum[i]);
-        }
+        //}
     }
 
     double offspringCost = Fitness(stripWidth, offspringSum, offspring);
