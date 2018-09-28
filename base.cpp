@@ -113,11 +113,11 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
     //Sort all of the scores in the allScores vector in ascending order
     std::sort(allScores.begin(), allScores.end()); //sorts elements of vector in ascending order
 
-    //cout << "All scores:\n";
-    /*for(i = 0; i < allScores.size(); ++i){
-        cout << allScores[i] << " ";
+    //std::cout << "All scores:\n";
+    /*for(const auto& v : allScores){
+        std::cout << v << " ";
     }
-    cout << endl;*/
+    std::cout << std::endl;*/
 
     //Filling in adjacency matrix - if sum of two scores >= tau (70), then insert 1 into the matrix, else leave as 0
     for (i = 0; i < allScores.size() - 1; ++i) {
@@ -146,14 +146,14 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
         adjMatrix[randOrder[2 * i + 1]][randOrder[2 * i]] = 2;
     }
 
-    /*cout << "AdjMatrix:\n";
-    for(i = 0; i < numScores; ++i){
-        for(j = 0; j < numScores; ++j){
-            cout << adjMatrix[i][j] << " ";
+    /*std::cout << "AdjMatrix:\n";
+    for(const auto& subVec : adjMatrix)
+        for(const auto& v : subVec){
+            std::cout << v << " ";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    cout << endl << endl;*/
+    std::cout << std::endl << std::endl;*/
 
 
 
@@ -165,11 +165,11 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
             }
         }
     }
-    /*cout << "Mates Vector:\n";
-    for(i = 0; i < partners.size(); ++i){
-        cout << partners[i] << " ";
+    /*std::cout << "Mates Vector:\n";
+    for(const auto& v : partners){
+        std::cout << v << " ";
     }
-    cout << endl << endl;*/
+    std::cout << std::endl << std::endl;*/
 
     for(i = 0; i < numScores; ++i){
         for(j = 0; j < numScores; ++j){
@@ -193,7 +193,7 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
             }
         }
     }
-    //cout << endl;
+    //std::cout << std::endl;
 
     //cout << right << setw(5) << "Box#" << setw(12) << "Scores" << setw(12) << "Mates" << setw(12) << "Width\n";
     for(i = 0; i < numScores; ++i){
@@ -210,14 +210,14 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
 
     //cout << "Total Item Widths: " << totalItemWidth << endl << endl;
 
-    /*cout << "allItems:\n";
-    for(i = 0; i < numScores; ++i){
-        for(j = 0; j < numScores; ++j){
-            cout << allItems[i][j] << " ";
+    /*std::cout << "allItems:\n";
+    for(const auto& subVec : allItems)
+        for(const auto& v : subVec){
+            std::cout << v << " ";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    cout << endl;*/
+    std::cout << std::endl << std::endl;*/
 
 }
 
