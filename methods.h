@@ -14,7 +14,6 @@ Evolutionary Algorithm with Local Search
 #include <vector>
 #include <set>
 
-
 void Swap(int& a, int& b);
 
 int LowerBound(int stripWidth, double totalItemWidth);

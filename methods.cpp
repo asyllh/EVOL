@@ -5,9 +5,7 @@ Evolutionary Algorithm with Local Search
 23/08/18
 /--------------*/
 
-
 #include "methods.h"
-
 
 void Swap(int& a, int& b){
     int temp = a;
@@ -104,7 +102,6 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
         FFR(numScores, numItem, partners, itemWidths, itemOrder);
     }
 
-
     //std::cout << "Item Order\n";
     /*for(const auto& v : itemOrder){
         std::cout << v << " ";
@@ -167,12 +164,8 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
         --l;
     }
 
-
-
     //cout << "After FFD: " << strip.size() << " strips\n";
-
     //cout << "Lower Bound: " << LowerBound(totalItemWidth, stripWidth) << " strips\n";
-
 
     /*cout << "Strips FFD (scores):\n";
     for(i = 0; i < strip.size(); ++i){
@@ -183,7 +176,6 @@ void FFShell(int numScores, int numItem, int maxItemWidth, int stripWidth, std::
         cout << endl;
     }
     cout << endl;*/
-
 
     /*cout << "Strip" << setw(8) << "Width" << setw(12) << "Residual\n";
     for(i = 0; i < stripSum.size(); ++i){
@@ -394,8 +386,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
 
     //region PairPair
     PairPair:
-    swapType = 0;
-    moveType = 0;
     /*SWAPPING A PAIR OF BOXES FROM EACH SET*/
     for(i = 0; i < stripX.size(); ++i){ //For each strip in the set stripX
         if(stripX[i].size() >= 4){ //If there are at least 2 boxes on stripX[i] (note that each element represents a score, so 4 elements = 2 boxes)
@@ -446,7 +436,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
                                                          itemWidths, stripSumX, stripX, stripSumY, stripY);
                                             }
                                         }
-                                        else{ //If stripX[i].size() > 4 && stripY[j[.size() > 4
+                                        else{ //If stripX[i].size() > 4 && stripY[j].size() > 4
                                             moveType = 0;
                                             InitAHCA(tau, swapType, moveType, feasible, i, a, b, j, c, d, allScores,
                                                      itemWidths, stripSumX, stripX, stripSumY, stripY);
@@ -468,8 +458,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
 
     //region PairSin
     PairSin:
-    swapType = 0;
-    moveType = 0;
     /*SWAPPING A PAIR OF BOXES FROM SET STRIPX WITH ONE BOX FROM SET STRIPY*/
     for(i = 0; i < stripX.size(); ++i){ //For each strip in the set stripX
         if(stripX[i].size() >= 4){ //If there are at least 2 boxes on stripX[i]
@@ -530,8 +518,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
 
     //region SinSin
     SinSin:
-    swapType = 0;
-    moveType = 0;
     /*SWAPPING ONE BOX FROM SET STRIPX WITH ONE BOX FROM SET STRIPY*/
     for(i = 0; i < stripX.size(); ++i){ //For each strip in the set stripX
         for(a = 0; a < stripX[i].size()-1; a+=2){ // Starting from the first score on the first box until the first score on the last box
@@ -579,8 +565,6 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
 
     //region MoveSin
     MoveSin:
-    swapType = 0;
-    moveType = 0;
     /*MOVING ONE BOX FROM SET STRIPY TO SET STRIPX*/
     for(j = 0; j < stripY.size(); ++j){ //For each strip in the set stripY
         for(c = 0; c < stripY[j].size()-1; c+=2){ //Starting from the first score on the first box until the first score on the last box
@@ -663,8 +647,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
             stripSumY.push_back(0);
         }
 
-        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, partialItem, stripSumY,
-                   stripY);
+        PartialFFD(numScores, maxItemWidth, stripWidth, partners, adjMatrix, itemWidths, partialItem, stripSumY, stripY);
 
         //join sets stripX and stripY together back into vector<vector<int> > strip
 
