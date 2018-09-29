@@ -4,9 +4,10 @@ main.cpp
 Evolutionary Algorithm with Local Search
 23/08/2018
 /--------------*/
-
 /** NOTES **/
 /* Why does the program take longer when n = 10? (numItems = 10)
+ * Change local search into functions/remove gotolabels
+ * Fill up setQS during EA rather than creating qualityStrips, then dlxMatrix, then putting it into setQS
  */
 
 #include <iostream>
@@ -26,16 +27,16 @@ int main(int argc, char** argv){
     }
 
     //region Default Variables
-    int numIterations = 1000;
-    int tau = 70;
-    int numItem = 500;
-    int minWidth = 1;
-    int maxWidth = 70;
-    int minItemWidth = 150;
-    int maxItemWidth = 1000;
-    int stripWidth = 5000;
-    int numPop = 0;
-    int xOver = 1;
+    int numIterations = 1000; //Number of times EA will be called
+    int tau = 70; //Minimum scoring distance
+    int numItem = 500; //Number of items n in the set I
+    int minWidth = 1; //Minimum width of the scores
+    int maxWidth = 70; //Maximum width of the scores
+    int minItemWidth = 150; //Minimum width of the items
+    int maxItemWidth = 1000; //Maximum width of the items
+    int stripWidth = 5000; //Width of strips
+    int numPop = 0; //Number of initial solutions in population
+    int xOver = 1; //Crossover Type, 1 = GGA, 2 = GPX
     int randomSeed = 1;
     //endregion
 
@@ -81,26 +82,25 @@ int main(int argc, char** argv){
     ArgumentCheck(numIterations, tau, numItem, minWidth, maxWidth, minItemWidth, maxItemWidth, stripWidth, numPop, xOver, randomSeed);
 
     //region Variables
-    int bestStart, bestEnd;
-    int iteration;
-    int numScores = numItem * 2;
-    double totalItemWidth;
-    double tempFitness;
-    double bestFitness = 0.0;
-    std::vector<int> allScores;
-    std::vector<int> partners(numScores, 0);
-    std::vector<std::vector<int> > itemWidths(numScores, std::vector<int>(numScores, 0));
-    std::vector<std::vector<int> > adjMatrix(numScores, std::vector<int>(numScores, 0));
-    std::vector<std::vector<int> > allItems(numScores, std::vector<int>(numScores, 0));
-    std::vector<std::vector<std::vector<int> > > population;
-    std::vector<std::vector<int> > populationSum;
-    std::vector<std::vector<int> > bestSolnStart;
-    std::vector<int> bestSolnStartSum;
-    std::vector<std::vector<int> > qualityStrips;
-    std::vector<int> qualityStripsSum;
-    std::vector<int> qualityItems(numItem, 0);
-    std::set<std::vector<int> > feasiblePacking;
-    std::set<std::vector<int> > infeasiblePacking;
+    int bestStart, bestEnd; //Takes index i of population (i.e. the solution i in the population) that has the best Fitness at the beginning and end
+    int numScores = numItem * 2; //Number of score widths
+    double totalItemWidth; //Sum of all n item widths in the set I
+    double tempFitness; //temp variable to help keep track of the best Fitness so far
+    double bestFitness = 0.0; //Value of the Fitness of the best solution
+    std::vector<int> allScores; //Vector containing all score widths (size = numScores)
+    std::vector<int> partners(numScores, 0); //Vector containing partners
+    std::vector<std::vector<int> > itemWidths(numScores, std::vector<int>(numScores, 0)); //Matrix containing item widths
+    std::vector<std::vector<int> > adjMatrix(numScores, std::vector<int>(numScores, 0)); //Matrix showing score widths that meet VSC or that are partners
+    std::vector<std::vector<int> > allItems(numScores, std::vector<int>(numScores, 0)); //Matrix numbering all items from 0 to numItem - 1
+    std::vector<std::vector<std::vector<int> > > population; //3D matrix containing solutions
+    std::vector<std::vector<int> > populationSum; //Contains sum of each strip for every solution in the population
+    std::vector<std::vector<int> > bestSolnStart; //Contains the solution that has the best Fitness at the start
+    std::vector<int> bestSolnStartSum; //Contains the sum of the strips in the solution that has the best Fitness at the start
+    std::vector<std::vector<int> > qualityStrips; //Contains strips that will be used for postoptimization
+    std::vector<int> qualityStripsSum; //Contains sum of the strips in qualityStrips
+    std::vector<int> qualityItems(numItem, 0); //Contains the number of times each item appears in qualityStrips
+    std::set<std::vector<int> > feasiblePacking; //Set of Vectors containing strips that have a feasible arrangement of items
+    std::set<std::vector<int> > infeasiblePacking; //Set of Vectors containing strips that have an infeasible arrangement of items
     //endregion
 
     srand(randomSeed);
@@ -115,10 +115,6 @@ int main(int argc, char** argv){
         feasiblePacking.insert(temp);
         temp.clear();
     }
-
-
-
-
 
     int lowerBound = LowerBound(stripWidth, totalItemWidth);
     //std::cout << "Lower bound: " << lowerBound << " strips.\n\n";
@@ -144,8 +140,7 @@ int main(int argc, char** argv){
 
     bestEnd = bestStart;
 
-
-    for(iteration = 0; iteration < numIterations; ++iteration) {
+    for(int iteration = 0; iteration < numIterations; ++iteration) {
         EA(tau, xOver, numScores, maxItemWidth, stripWidth, bestEnd, bestFitness, allScores, partners, adjMatrix, itemWidths,
            allItems, populationSum, population, qualityStripsSum, qualityStrips, qualityItems);
     }
@@ -166,15 +161,15 @@ int main(int argc, char** argv){
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;*/
+    std::cout << std::endl;
 
-    /*std::cout << "qualityStripSum - Sum of all items on each strip:\n";
+    std::cout << "qualityStripSum - Sum of all items on each strip:\n";
     for(const auto& v : qualityStripsSum){
         std::cout << v << " ";
     }
-    std::cout << std::endl << std::endl;*/
+    std::cout << std::endl << std::endl;
 
-    /*std::cout << "qualityItems - Number of times item appears in qualityStrips set\n";
+    std::cout << "qualityItems - Number of times item appears in qualityStrips set\n";
     for(const auto& v : qualityItems){
         std::cout << v << " ";
     }
@@ -188,7 +183,6 @@ int main(int argc, char** argv){
             dlxMatrix[i].push_back(allItems[qualityStrips[i][j]][qualityStrips[i][j+1]]);
         }
         std::sort(dlxMatrix[i].begin(), dlxMatrix[i].end());
-
     }
 
     //std::cout << "Size of dlxMatrix: " << dlxMatrix.size() << std::endl;
@@ -231,5 +225,3 @@ int main(int argc, char** argv){
 
 
 }//END INT MAIN
-
-
