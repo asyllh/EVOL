@@ -9,7 +9,7 @@
 * Creates `population` of solutions, one using `FFD`, the rest using `FFR`
 
 ### LocalSearch
-#### PairPair - swapType = 1
+#### PairPair - swapType = 1 (swapping two items from stripX with two items from stripY)
 1. Straight swap, no moveType
     * `stripX` = 2 items and `stripY` = 2 items
 2. moveType = 11
@@ -23,7 +23,7 @@
 6. moveType = 0;
     * `stripX` > 2 items and `stripY` > 2 items 
 
-#### PairSin - swapType = 2
+#### PairSin - swapType = 2 (swapping two items from stripX with one item from stripY)
 1. Straight swap, no moveType
     * `stripX` = 2 items and `stripY` = 1 item
 2. moveType = 21
@@ -35,7 +35,7 @@
 5. moveType = 0;
     * `stripX` > 2 items and `stripY` > 1 item 
     
-#### SinSin - swapType = 3
+#### SinSin - swapType = 3 (swapping one item from stripX with one item from stripY)
 1. Straight swap, no moveType
     * `stripX` = 1 item and `stripY` = 1 item
 2. moveType = 31
@@ -45,7 +45,7 @@
 4. moveType = 0    
     * `stripX` > 1 item and `stripY` > 1 item   
     
-#### MoveSin - swapType = 4
+#### MoveSin - swapType = 4 (moving one item from strip Y to strip X)
 1. moveType = 41
     * `stripY` = 1 item
 2. moveType = 42
