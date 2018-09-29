@@ -5,7 +5,6 @@ Evolutionary Algorithm with Local Search
 23/08/2018
 /--------------*/
 
-
 #include "base.h"
 
 void ProgramInfo(){
@@ -220,5 +219,4 @@ void CreateInstance(int tau, int numScores, int numItem, int minWidth, int maxWi
     std::cout << std::endl << std::endl;*/
 
 }
-
 
