@@ -599,6 +599,7 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
     //cout << "NO SINGLE MOVE PERFORMED.\n\n";
     //endregion
 
+    //region End
     End:
     //cout << "Local Search complete\n-------------------\n";
     if(feasible == 2){
@@ -685,8 +686,8 @@ void LocalSearch(int tau, int numScores, int maxItemWidth, int stripWidth, std::
         }
         cout << endl << endl;*/
 
-
     }
+    //endregion
 
 }
 
@@ -1777,7 +1778,7 @@ void EA(int tau, int recomb, int numScores, int maxItemWidth, int stripWidth, in
     /**Here we need to find best strips from offspring and put in a separate set before putting offspring in population**/
 
     //double limit = 0.8 * static_cast<double>(stripWidth);
-    for(i = 0; i < offspringSum.size(); ++i){
+    for(i = 0; i < offspring.size(); ++i){
         //if(offspringSum[i] >= limit){
             for(j = 0; j < offspring[i].size()-1; j+=2){
                 ++qualityItems[allItems[offspring[i][j]][offspring[i][j+1]]];
